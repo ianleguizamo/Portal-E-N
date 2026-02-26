@@ -13,12 +13,12 @@ public class CmaxPage {
   public static final Target TXT_COPIAR_SI_HAY_PAQUETE = Target.the("Hay paquetes comprados??")
           .locatedBy("//a[contains(@class,'DATblTDALinkTxt')]");
 
-  public static final Target TXT_USUARIO =
-      Target.the("Caja de texto para ingresar el nombre del usuario").located(By.id("j_username"));
+  public static final Target TXT_USUARIO = Target.the("campo correo")
+          .located(By.id("_cenLoginPortlet_userName"));
 
   public static final Target TXT_CONTRASENA =
       Target.the("Caja de texto para ingresar la contraseña del usuario")
-          .located(By.id("j_password"));
+              .located(By.id("_cenLoginPortlet_password"));
 
   public static final Target BTN_ACEPTAR = Target.the("Botón aceptar")
           .located(By.cssSelector("button.acept-btn"));
@@ -91,6 +91,10 @@ public class CmaxPage {
   public static final Target BOTON_CONTINUAR1 =
           Target.the("Botón Continuar")
                   .located(By.xpath("//button[contains(@class,'button-select-enable') and contains(@class,'button-size')]"));
+
+  public static final Target BTN_INGRESAR = Target.the("botón ingresar")
+          .located(By.id("buttonSign"));
+
 
   public static final Target HEADER_TABLA_LINEAS =
           Target.the("Encabezado de tabla de líneas móviles")

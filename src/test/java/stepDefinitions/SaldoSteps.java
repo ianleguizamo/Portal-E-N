@@ -1,6 +1,7 @@
 package stepDefinitions;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 import cucumber.api.java.es.Dado;
 import net.serenitybdd.screenplay.actors.OnStage;
@@ -22,7 +23,7 @@ public class SaldoSteps {
         OnStage.setTheStage(new OnlineCast());
     }
 
-    @Dado("^que el usuario abre la página$")
+    @Given("^que el usuario abre la página$")
     public void abrirPortal() {
         OnStage.theActorCalled("Cortana").wasAbleTo(
                 AbrirPagina.en("https://miclaroempresas.com.co/login")

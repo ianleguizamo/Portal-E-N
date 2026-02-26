@@ -1,7 +1,7 @@
 package tasks.PortalEmpresas;
 
 import static userinterfaces.CmaxPage.*;
-import static userinterfaces.CmaxPage.BTN_OK;
+
 
 import interactions.WaitFor;
 
@@ -33,7 +33,7 @@ public class RealizarIngreso implements Task {
         actor.attemptsTo(
                 Enter.theValue(data.get("Usuario")).into(TXT_USUARIO),
                 Enter.theValue(data.get("Contrasena")).into(TXT_CONTRASENA),
-                Click.on(BOTON_CONTINUAR1),
+                Click.on(BTN_INGRESAR),
                 WaitFor.aTime(10000),
                 Click.on(BTN_ACEPTAR)
                 );
