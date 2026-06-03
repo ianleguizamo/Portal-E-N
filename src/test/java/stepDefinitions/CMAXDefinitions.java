@@ -72,12 +72,12 @@ public class CMAXDefinitions {
 
 
 
-    @When("^Se ingresa el numero de la linea en consulta inicial$")
+    /*@When("^Se ingresa el numero de la linea en consulta inicial$")
     public void seIngresaElNumeroDeLaLineaAConsultarConsultaInicial() {
         ReportHooksWeb.setLineaDesdeData(data.get("Numero"));
         theActorInTheSpotlight()
                 .attemptsTo(IngresarNumeroConsultaInicial.ingresarNumeroConsultaInicial(data));
-    }
+    }*/
 
 
 

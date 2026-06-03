@@ -3,6 +3,7 @@ package userinterfaces;
 import interactions.scroll.Scroll;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.targets.Target;
+import org.apache.poi.ss.formula.functions.T;
 import org.openqa.selenium.By;
 
 public class CmaxPage {
@@ -20,14 +21,14 @@ public class CmaxPage {
       Target.the("Caja de texto para ingresar la contraseña del usuario")
               .located(By.id("_cenLoginPortlet_password"));
 
-  public static final Target BTN_ACEPTAR = Target.the("Botón aceptar")
-          .located(By.cssSelector("button.acept-btn"));
+  public static final Target BTN_INGRESAR = Target.the("Botón ingresar")
+          .located(By.cssSelector("button.button-sign"));
 
   public static final Target BTN_CERRAR_MENU = Target.the("Botón cerrar menú")
           .located(By.cssSelector("span.icon-Eliminar-02.icon-ham"));
 
   public static final Target MENU_DESPLEGABLE =
-          Target.the("Caja de texto para ingresar la contraseña del usuario")
+          Target.the("Menu hamburguesa desplegable")
                   .located(By.id("icon-menu"));
 
   public static final Target PAGOS_EN_LINEA = Target.the("botón Pagos en línea")
@@ -92,8 +93,8 @@ public class CmaxPage {
           Target.the("Botón Continuar")
                   .located(By.xpath("//button[contains(@class,'button-select-enable') and contains(@class,'button-size')]"));
 
-  public static final Target BTN_INGRESAR = Target.the("botón ingresar")
-          .located(By.id("buttonSign"));
+  public static final Target BTN_ACEPTAR = Target.the("botón aceptar")
+          .located(By.cssSelector("button.acept-btn"));
 
 
   public static final Target HEADER_TABLA_LINEAS =
@@ -205,6 +206,46 @@ public class CmaxPage {
           Target.the("Botón Administrar NITS del Grupo")
                   .located(By.xpath("//a[contains(.,'Administrar NITS del Grupo')]"));
 
+  public static final Target CONSULTOR_ASIGNADO =
+          Target.the("Consultor Asignado")
+                  .located(By.id("menu-quick"));
+
+  public static final Target CENTRO_DE_AYUDA =
+          Target.the("Centro de Ayuda")
+                  .located(By.xpath("//*[@id=\"menu-quick\"]/nav/div[5]/a/div/div[2]/span"));
+
+  public static final Target AUTOREGISTRO =
+          Target.the ("Autoregistro")
+                  .located(By.xpath("//*[@id=\"portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_FaV2SO3R3fhX\"]/div/div[2]/div/div/div/div/div[4]/div[1]/div[1]/span"));
+
+  public static final Target PAGO_EN_LINEA =
+          Target.the ("Pagos en Linea")
+                  .located(By.xpath("//*[@id=\"portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_FaV2SO3R3fhX\"]/div/div[2]/div/div/div/div/div[4]/div[1]/div[2]/span"));
+
+  public static final Target CONSULTA_FACTURA=
+          Target.the ("Consulta de facturas")
+                  .located(By.xpath("//*[@id=\"portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_FaV2SO3R3fhX\"]/div/div[2]/div/div/div/div/div[4]/div[1]/div[3]/span"));
+
+  public static final Target SOLUCION_MOVIL=
+          Target.the ("Soluciones Móviles")
+                  .located(By.xpath("//*[@id=\"portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_FaV2SO3R3fhX\"]/div/div[2]/div/div/div/div/div[4]/div[1]/div[4]/span"));
+
+  public static final Target MENU_LATERAL =
+          Target.the ("Menú Lateral")
+                  .located(By.xpath("//*[@id=\"portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_FaV2SO3R3fhX\"]/div/div[2]/div/div/div/div/div[4]/div[1]/div[5]/span"));
+
+  public static final Target SOLUCION_FIJA_HFC =
+          Target.the ("Soluciones fijas HFC o FO")
+                  .located(By.xpath("//*[@id=\"portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_FaV2SO3R3fhX\"]/div/div[2]/div/div/div/div/div[4]/div[1]/div[6]/span"));
+
+  public static final Target SOLICITUD_PROCESO =
+          Target.the ("Solicitudes y Procesos")
+                  .located(By.xpath("//*[@id=\"portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_FaV2SO3R3fhX\"]/div/div[2]/div/div/div/div/div[4]/div[1]/div[7]/span"));
+
+  public static final Target DOC_CLARO_COL =
+          Target.the("Documentacion Claro Colombia")
+                  .located(By.xpath("//*[@id=\"menu-quick\"]/nav/div[4]/a/div/div[2]"));
+
   public static final Target CONTENEDOR_OPINION = Target.the("contenedor mensaje de opinión")
           .located(By.xpath("//div[@style='text-align: center;' and .//strong[contains(text(),'Tu opinión es importante')]]"));
 
@@ -244,11 +285,11 @@ public class CmaxPage {
           .located(By.xpath("//div[contains(@class,'method')][.//div[text()='Tarjeta de Débito/Crédito']]"));
 
   public static final Target CAMPANA =
-          Target.the("Caja de texto para ingresar la contraseña del usuario")
+          Target.the("Icono campana de notificaciones")
                   .located(By.id("campana-notifi"));
 
   public static final Target CAMPANA_X =
-          Target.the("Caja de texto para ingresar la contraseña del usuario")
+          Target.the("Botón cerrar modal notificaciones")
                   .located(By.id("closeButto"));
 
   public static final Target TERMINOS_Y_CONDICIONES = Target.the("botón Términos y condiciones")
@@ -258,14 +299,13 @@ public class CmaxPage {
           .locatedBy("//span[contains(text(),'Mi cuenta')]");
 
   public static final Target INFORMACION_USUARIO = Target.the("opción Información del usuario")
-          .located(By.id("mi-cuenta-informacion"));
+          .located(By.xpath("//*[@id=\"mi-cuenta-informacion\"]/div/div[2]/span"));
 
   public static final Target GESTION_CUENTA = Target.the("título Gestión de la cuenta")
-          .located(By.cssSelector("h1.title-arrow-left-gestion"));
-
+          .located(By.xpath("//*[@id=\"mi-cuenta\"]/div/div[2]/h1"));
 
   public static final Target GESTION_DE_CUENTA = Target.the("título Gestión de la cuenta")
-          .located(By.cssSelector("h1.title-arrow-left"));
+            .located(By.cssSelector("h1.title-arrow-left"));
 
   public static final Target GESTION_USUARIOS = Target.the("link Gestión de usuarios")
           .locatedBy("//span[contains(text(),'Gestión de usuarios')]");

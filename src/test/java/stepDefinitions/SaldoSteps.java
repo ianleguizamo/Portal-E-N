@@ -23,7 +23,7 @@ public class SaldoSteps {
         OnStage.setTheStage(new OnlineCast());
     }
 
-    @Given("^que el usuario abre la página$")
+    @Given("^El usuario abre la página$")
     public void abrirPortal() {
         OnStage.theActorCalled("Cortana").wasAbleTo(
                 AbrirPagina.en("https://miclaroempresas.com.co/login")
@@ -33,17 +33,17 @@ public class SaldoSteps {
         TestData.cargarDatos("src/test/resources/data/Usuario2.xlsx", "Datos", 1);
     }
 
-    @When("^inicio de sesion$")
+    @When("^Inicio de sesion$")
     public void seIngresaElUsuarioYLaContrasena() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight().attemptsTo(RealizarIngreso.realizarIngreso(datos));
     }
 
-    @When("^Validaciones iniciales$")
-    public void seIngresaElNumeroDeLaLineaAConsultarConsultaInicial() {
+    @When("^Redireccionamientos$")
+    public void seRedireccionamientos() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
-                .attemptsTo(IngresarNumeroConsultaInicial.ingresarNumeroConsultaInicial(datos));
+                .attemptsTo(Redireccionamientos.redireccionamientos(datos));
     }
 
     @When("^Ingreso al menu desplegable$")
@@ -72,6 +72,28 @@ public class SaldoSteps {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(NITS.nITS(datos));
+    }
+
+    @When("^Consultor Asignado$")
+    public void ConsultorAsignado(){
+        Map<String,String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(ConsultorAsignado.consultorAsignado(datos));
+
+    }
+
+    @When("^Documentación Claro Colombia$")
+    public void DocumentacionClaroColombia(){
+        Map<String,String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(DocumentacionClaroColombia.documentacionClaroColombia(datos));
+    }
+
+    @When("^Centro De Ayuda$")
+    public void CentroDeAyuda(){
+        Map<String,String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(CentroDeAyuda.centroDeAyuda(datos));
     }
 
     @When("^ingreso a soluciones moviles PSE$")
@@ -207,7 +229,7 @@ public class SaldoSteps {
                 .attemptsTo(DetalleDelPlan.detalleDelPlan(datos));
     }
 
-    @When("^detalle cuenta maestra$")
+    @When("^Detalle cuenta maestra$")
     public void DetalleCuentaMaestra() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()

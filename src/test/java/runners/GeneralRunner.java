@@ -12,14 +12,14 @@ import java.io.IOException;
         features = "src/test/resources/features",
         glue = {"stepDefinitions", "utils", "hooks"},
         snippets = SnippetType.CAMELCASE,
-        tags = "@EyN_PORT_01"
+            tags = "@EyN_PORT_InicicioSesion"
 )
 
 @RunWith(CustomRunner.class)
 public class GeneralRunner {
     @BeforeSuite
     public static void setUp() throws InvalidFormatException, IOException {
-        System.out.println("🚀 Iniciando configuración para pruebas USSD...");
-        System.out.println("✅ Configuración USSD completada");
+        System.out.println(" Iniciando configuración para pruebas Portal E&N...");
+        System.out.println(" Configuration Portal E&N completada");
     }
 }

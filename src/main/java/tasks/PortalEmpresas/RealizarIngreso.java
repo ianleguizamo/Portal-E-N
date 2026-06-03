@@ -2,7 +2,6 @@ package tasks.PortalEmpresas;
 
 import static userinterfaces.CmaxPage.*;
 
-
 import interactions.WaitFor;
 
 import java.util.HashMap;
@@ -14,12 +13,14 @@ import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actions.Enter;
-import net.serenitybdd.screenplay.actions.EnterValueIntoBy;
+import net.serenitybdd.screenplay.actions.JavaScriptClick;
+import net.serenitybdd.screenplay.ensure.Ensure;
 import utils.EvidenciaUtils;
 
 public class RealizarIngreso implements Task {
     Map<String, String> data = new HashMap<String, String>();
-    private static final String paso = "Verificar el estado inicial de la línea";
+    private static final String paso = "Realizar inicio de sesion";
+
     public RealizarIngreso(Map<String, String> data) {
         this.data = data;
     }
@@ -33,10 +34,12 @@ public class RealizarIngreso implements Task {
         actor.attemptsTo(
                 Enter.theValue(data.get("Usuario")).into(TXT_USUARIO),
                 Enter.theValue(data.get("Contrasena")).into(TXT_CONTRASENA),
-                Click.on(BTN_INGRESAR),
-                WaitFor.aTime(10000),
-                Click.on(BTN_ACEPTAR)
-                );
+                Ensure.that(BTN_INGRESAR).isDisplayed(),
+                JavaScriptClick.on(BTN_INGRESAR),
+                WaitFor.aTime(5000),
+                JavaScriptClick.on(BTN_ACEPTAR),
+                WaitFor.aTime(5000)
+        );
 
         EvidenciaUtils.registrarCaptura(paso);
     }

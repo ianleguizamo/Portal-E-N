@@ -1,22 +1,21 @@
 package tasks.PortalEmpresas;
 
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
-import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 import static userinterfaces.CmaxPage.*;
 
 import interactions.*;
 
-import interactions.scroll.ScrollMenuLateral;
+
 import interactions.scroll.ScrollUserTable;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.waits.WaitUntil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
+
+import utils.EvidenciaUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +29,9 @@ public class GestionDeUsuarios implements Task {
     public GestionDeUsuarios(Map<String, String> data) {
         this.data = data;
     }
+    private static final String paso1 = "Selecciona Gestión de Usuario del menu hamburguesa";
+    private static final String paso2 = "Selecciona crear usuario";
+    private static final String paso3 = "Se valida descarga del documento usuarios";
 
     public static Performable gestionDeUsuarios(Map<String, String> data) {
         return Instrumented.instanceOf(GestionDeUsuarios.class)
@@ -39,14 +41,12 @@ public class GestionDeUsuarios implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
 
-        CapturasPantallasWeb.capturaPantalla("gestion de usuarios", "gestion de usuarios");
-
         actor.attemptsTo(
                 Click.on(GESTION_USUARIOS),
                 WaitForResponse.withTarget(CREAR_USUARIO)
         );
 
-        CapturasPantallasWeb.capturaPantalla("gestion de usuario abierta", "gestion de usuario abierta");
+        EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
                 Click.on(CREAR_USUARIO),
@@ -54,24 +54,23 @@ public class GestionDeUsuarios implements Task {
 
         );
 
-        CapturasPantallasWeb.capturaPantalla("Crear usuario", "formulario creacion usuario");
+        EvidenciaUtils.registrarCaptura(paso2);
 
         actor.attemptsTo(
                 Click.on(FLECHA_VOLVER_GU),
-                WaitFor.aTime(400),
+                WaitFor.aTime(4000),
                 ScrollUserTable.by(300)
         );
 
-        CapturasPantallasWeb.capturaPantalla("boton descargar", "boton descargar");
+        EvidenciaUtils.registrarCaptura(paso3);
 
         actor.attemptsTo(
                 Click.on(BOTON_DESCARGAR),
-                WaitFor.aTime(300),
+                WaitFor.aTime(5000),
                 ScrollUserTable.by(-300),
                 Click.on(FLECHA_VOLVER_GU),
-                Click.on(BTN_ACEPTAR),
                 Click.on(MENU_DESPLEGABLE)
-        );
+                );
 
 
     }

@@ -1,36 +1,48 @@
 package tasks.PortalEmpresas;
 
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 import static userinterfaces.CmaxPage.*;
 
 import interactions.*;
 
 import interactions.scroll.ScrollMenuLateral;
+
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
+import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.waits.WaitUntil;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
+
+import utils.EvidenciaUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class IngresarMenuDesplegable implements Task {
 
+    private static final Logger log =
+            LoggerFactory.getLogger(IngresarMenuDesplegable.class);
 
-    private static final Logger log = LoggerFactory.getLogger(IngresarMenuDesplegable.class);
     Map<String, String> data = new HashMap<>();
 
     public IngresarMenuDesplegable(Map<String, String> data) {
         this.data = data;
     }
+    private static final String paso1 = "Selecciona termininos y condiciones";
+    private static final String paso2 = "Validacion de termininos y condiciones";
+    private static final String paso3 = " Seleccion y validación de Politica de privacidad";
+
 
     public static Performable ingresarMenuDesplegable(Map<String, String> data) {
+
         return Instrumented.instanceOf(IngresarMenuDesplegable.class)
                 .withProperties(data);
     }
@@ -38,42 +50,87 @@ public class IngresarMenuDesplegable implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
 
+        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
 
+        // Ventana principal
+
+        String ventanaPrincipal = driver.getWindowHandle();
 
         actor.attemptsTo(
                 Click.on(MENU_DESPLEGABLE),
-                WaitFor.aTime(2000),
+                WaitFor.aTime(3000),
                 ScrollMenuLateral.by(300)
         );
 
-        CapturasPantallasWeb.capturaPantalla("pantalla principal", "se valida todos los menus cerrados");
+        EvidenciaUtils.registrarCaptura(paso1);
+
+        // Terminos y condiciones
 
         actor.attemptsTo(
-                WaitUntil.the(TERMINOS_Y_CONDICIONES, isVisible()).forNoMoreThan(5).seconds(),
-                SmartClick.on(TERMINOS_Y_CONDICIONES),
-                WaitFor.aTime(200)
+                WaitUntil.the(TERMINOS_Y_CONDICIONES, isVisible())
+                        .forNoMoreThan(5)
+                        .seconds(),
 
+                SmartClick.on(TERMINOS_Y_CONDICIONES)
         );
 
-        CapturasPantallasWeb.capturaPantalla("terminos y condiciones","TyC");
+        EvidenciaUtils.registrarCaptura(paso2);
+
+        // Esperar nueva pestaña
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+
+        wait.until(d -> d.getWindowHandles().size() > 1);
+
+        // Cambiar a nueva pestaña
+        for (String ventana : driver.getWindowHandles()) {
+
+            if (!ventana.equals(ventanaPrincipal)) {
+
+                driver.switchTo().window(ventana);
+
+                break;
+            }
+        }
 
         actor.attemptsTo(
-                WaitFor.aTime(200),
-                CerrarPestañaYVolver.ahora(),
+                WaitFor.aTime(3000)
+        );
+
+        actor.attemptsTo(
+                CerrarPestañaYVolver.ahora(ventanaPrincipal)
+        );
+
+        // Ventana politica de privacidad
+
+        actor.attemptsTo(
                 SmartClick.on(POLITICAS_PRIVACIDAD)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Politicas de privacidad", "Politicas de privacidad");
+        EvidenciaUtils.registrarCaptura(paso3);
+
+        // Esperar nueva pestaña
+        wait.until(d -> d.getWindowHandles().size() > 1);
+
+        // Cambiar a nueva pestaña
+        for (String ventana : driver.getWindowHandles()) {
+
+            if (!ventana.equals(ventanaPrincipal)) {
+
+                driver.switchTo().window(ventana);
+
+                break;
+            }
+        }
 
         actor.attemptsTo(
-                CerrarPestañaYVolver.ahora(),
-                WaitFor.aTime(200),
-                ScrollMenuLateral.by(-300),
-                WaitFor.aTime(200)
-
+                WaitFor.aTime(3000)
         );
 
-
+        actor.attemptsTo(
+                CerrarPestañaYVolver.ahora(ventanaPrincipal),
+                WaitFor.aTime(3000),
+                ScrollMenuLateral.by(-300),
+                WaitFor.aTime(3000)
+        );
     }
-
 }

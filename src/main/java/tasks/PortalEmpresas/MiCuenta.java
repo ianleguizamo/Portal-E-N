@@ -1,27 +1,23 @@
 package tasks.PortalEmpresas;
 
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
-import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 import static userinterfaces.CmaxPage.*;
 
 import interactions.*;
-
 import interactions.scroll.ScrollMenuLateral;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.waits.WaitUntil;
+import net.serenitybdd.screenplay.actions.Scroll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
+import utils.EvidenciaUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MiCuenta implements Task {
-
 
     private static final Logger log = LoggerFactory.getLogger(MiCuenta.class);
     Map<String, String> data = new HashMap<>();
@@ -30,6 +26,10 @@ public class MiCuenta implements Task {
         this.data = data;
     }
 
+    private static final String paso1 = "Selecciona Mi cuenta en el menu hamburguesa";
+    private static final String paso2 = "Se validan Información del usuario ";
+    private static final String paso3 = "Selecciona Información del usuario";
+
     public static Performable miCuenta(Map<String, String> data) {
         return Instrumented.instanceOf(MiCuenta.class)
                 .withProperties(data);
@@ -37,33 +37,25 @@ public class MiCuenta implements Task {
 
     @Override
     public <T extends Actor> void performAs(T actor) {
-        actor.attemptsTo(
 
+        actor.attemptsTo(
                 Click.on(MI_CUENTA),
                 WaitForResponse.withTarget(INFORMACION_USUARIO)
         );
-
-        CapturasPantallasWeb.capturaPantalla("Mi cuenta click", "mi cuenta click");
-
-        actor.attemptsTo(
-                Click.on(INFORMACION_USUARIO),
-                ScrollMenuLateral.by(200),
-                WaitFor.aTime(200)
-
-        );
-
-        CapturasPantallasWeb.capturaPantalla("Informacion del usuario", "Info user");
+        EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
-
-                ScrollMenuLateral.by(-200),
-                WaitForResponse.withTarget(GESTION_CUENTA),
-                Click.on(GESTION_CUENTA),
-                WaitFor.aTime(200),
-                Click.on(GESTION_DE_CUENTA)
+                WaitFor.aTime(2000)
         );
 
+        EvidenciaUtils.registrarCaptura(paso2);
 
+        actor.attemptsTo(
+                WaitForResponse.withTarget(INFORMACION_USUARIO),
+                Scroll.to(INFORMACION_USUARIO),
+                WaitFor.aTime(1000),
+                Click.on(INFORMACION_USUARIO)
+        );
+        EvidenciaUtils.registrarCaptura(paso3);
     }
-
 }

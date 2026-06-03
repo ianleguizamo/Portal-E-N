@@ -17,6 +17,7 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.CapturasPantallasWeb;
+import utils.EvidenciaUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,8 @@ public class NITS implements Task {
         this.data = data;
     }
 
+    private static final String paso1 = "Administrar NITS";
+
     public static Performable nITS(Map<String, String> data) {
         return Instrumented.instanceOf(NITS.class)
                 .withProperties(data);
@@ -39,13 +42,12 @@ public class NITS implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
 
-        CapturasPantallasWeb.capturaPantalla("NITS", "NITS");
-
         actor.attemptsTo(
-                Click.on(ADMINISTRAR_NITS)
+                Click.on(ADMINISTRAR_NITS),
+                WaitFor.aTime(5000)
         );
 
-        CapturasPantallasWeb.capturaPantalla("NITS 2","NITS 2");
+        EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
                 Click.on(ICONO_CHEVRON_LEFT)

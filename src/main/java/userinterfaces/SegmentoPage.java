@@ -20,9 +20,9 @@ public class SegmentoPage extends PageObject {
           Target.the("Texto Tu sesión se ha cerrado por seguridad")
                   .located(MobileBy.xpath("//*[@text='Tu sesión se ha cerrado por seguridad']"));
 
-  public static final Target BTN_ACEPTAR =
+  /*public static final Target BTN_ACEPTAR =
           Target.the("Boton Aceptar")
-                  .located(MobileBy.xpath("//*[@text='Aceptar']"));
+                  .located(MobileBy.xpath("//*[@text='Aceptar']"));*/
 
   public static final Target LBL_NOS_ALEGRA_TENERTE_DE_VUELTA =
           Target.the("Texto ¡Nos alegra tenerte de vuelta!")
