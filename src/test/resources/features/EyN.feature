@@ -1,6 +1,6 @@
 Feature: EyN
 
-  @EyN_PORT_InicicioSesion
+  @EyN_PORT_InicioSesion
   Scenario: Inicio de Sesion y redireccionamientos
     Given El usuario abre la página
     When Inicio de sesion
