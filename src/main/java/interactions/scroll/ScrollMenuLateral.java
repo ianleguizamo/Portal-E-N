@@ -4,15 +4,12 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
+import net.thucydides.core.annotations.Step;
 import org.openqa.selenium.JavascriptExecutor;
 
 public class ScrollMenuLateral implements Task {
 
-    public enum ScrollType {
-        BY_PIXELS,
-        TO_TOP,
-        TO_BOTTOM
-    }
+    public enum ScrollType { BY_PIXELS, TO_TOP, TO_BOTTOM }
 
     private final ScrollType type;
     private final Integer pixels;
@@ -35,32 +32,18 @@ public class ScrollMenuLateral implements Task {
     }
 
     @Override
+    @Step("Desplazar menu lateral")
     public <T extends Actor> void performAs(T actor) {
-
         JavascriptExecutor js = (JavascriptExecutor) BrowseTheWeb.as(actor).getDriver();
-
         switch (type) {
-
             case BY_PIXELS:
-                js.executeScript(
-                        "document.querySelector('nav.quick-links')" +
-                                ".scrollBy(0, arguments[0]);",
-                        pixels
-                );
+                js.executeScript("document.querySelector('nav.quick-links').scrollBy(0, arguments[0]);", pixels);
                 break;
-
             case TO_TOP:
-                js.executeScript(
-                        "let menu = document.querySelector('nav.quick-links');" +
-                                "if(menu) menu.scrollTo({ top: 0, behavior: 'smooth' });"
-                );
+                js.executeScript("let menu = document.querySelector('nav.quick-links'); if(menu) menu.scrollTo({ top: 0, behavior: 'smooth' });");
                 break;
-
             case TO_BOTTOM:
-                js.executeScript(
-                        "let menu = document.querySelector('nav.quick-links');" +
-                                "if(menu) menu.scrollTo({ top: menu.scrollHeight, behavior: 'smooth' });"
-                );
+                js.executeScript("let menu = document.querySelector('nav.quick-links'); if(menu) menu.scrollTo({ top: menu.scrollHeight, behavior: 'smooth' });");
                 break;
         }
     }

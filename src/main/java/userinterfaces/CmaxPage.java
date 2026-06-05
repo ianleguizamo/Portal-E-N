@@ -208,7 +208,7 @@ public class CmaxPage {
 
   public static final Target CONSULTOR_ASIGNADO =
           Target.the("Consultor Asignado")
-                  .located(By.id("menu-quick"));
+                  .located(By.xpath("//*[@id=\"menu-quick\"]/nav/div[3]/a/div/div[2]/span"));
 
   public static final Target CENTRO_DE_AYUDA =
           Target.the("Centro de Ayuda")

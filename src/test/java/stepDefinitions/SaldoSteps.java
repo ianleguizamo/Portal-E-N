@@ -3,7 +3,8 @@ package stepDefinitions;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
-import cucumber.api.java.es.Dado;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Then;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import tasks.PortalEmpresas.*;
@@ -23,225 +24,220 @@ public class SaldoSteps {
         OnStage.setTheStage(new OnlineCast());
     }
 
-    @Given("^El usuario abre la página$")
+    @Given("^que el usuario abre el portal de Claro Empresas$")
     public void abrirPortal() {
-        OnStage.theActorCalled("Cortana").wasAbleTo(
+        OnStage.theActorCalled("Usuario").wasAbleTo(
                 AbrirPagina.en("https://miclaroempresas.com.co/login")
         );
-
-        // Cargar datos Excel UNA vez
         TestData.cargarDatos("src/test/resources/data/Usuario2.xlsx", "Datos", 1);
     }
 
-    @When("^Inicio de sesion$")
+    @When("^el usuario inicia sesión con sus credenciales$")
     public void seIngresaElUsuarioYLaContrasena() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight().attemptsTo(RealizarIngreso.realizarIngreso(datos));
     }
 
-    @When("^Redireccionamientos$")
+    @Then("^el sistema redirige correctamente al usuario$")
     public void seRedireccionamientos() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(Redireccionamientos.redireccionamientos(datos));
     }
 
-    @When("^Ingreso al menu desplegable$")
+    @And("^el usuario ingresa al menú desplegable$")
     public void seIngresaAlMenuDesplegable() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(IngresarMenuDesplegable.ingresarMenuDesplegable(datos));
     }
 
-    @When("^Valida mi cuenta$")
+    @Then("^el usuario valida la información de su cuenta$")
     public void seIngresaAMiCuenta() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(MiCuenta.miCuenta(datos));
     }
 
-    @When("^Valida gestion de usuarios$")
+    @Then("^el usuario valida la gestión de usuarios$")
     public void seIngresaAGestionDeUsuarios() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(GestionDeUsuarios.gestionDeUsuarios(datos));
     }
 
-    @When("^Valida NITS del grupo$")
+    @Then("^el usuario valida los NITs del grupo empresarial$")
     public void NITS() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(NITS.nITS(datos));
     }
 
-    @When("^Consultor Asignado$")
-    public void ConsultorAsignado(){
-        Map<String,String> datos = TestData.obtenerDatos();
+    @Then("^el usuario visualiza la información del consultor asignado$")
+    public void ConsultorAsignado() {
+        Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(ConsultorAsignado.consultorAsignado(datos));
-
     }
 
-    @When("^Documentación Claro Colombia$")
-    public void DocumentacionClaroColombia(){
-        Map<String,String> datos = TestData.obtenerDatos();
+    @Then("^el usuario accede a la documentación de Claro Colombia$")
+    public void DocumentacionClaroColombia() {
+        Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(DocumentacionClaroColombia.documentacionClaroColombia(datos));
     }
 
-    @When("^Centro De Ayuda$")
-    public void CentroDeAyuda(){
-        Map<String,String> datos = TestData.obtenerDatos();
+    @Then("^el usuario navega por todas las opciones del centro de ayuda$")
+    public void CentroDeAyuda() {
+        Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(CentroDeAyuda.centroDeAyuda(datos));
     }
 
-    @When("^ingreso a soluciones moviles PSE$")
+    @Then("^el usuario accede a pagos de soluciones móviles por PSE$")
     public void SolucionesMovilesPSE() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolucionesMovilesPSE.solucionesMovilesPSE(datos));
     }
 
-    @When("^ingreso a soluciones moviles Bancolombia$")
+    @Then("^el usuario accede a pagos de soluciones móviles por Bancolombia$")
     public void SolucionesMovilesBancolombia() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolucionesMovilesBancolombia.solucionesMovilesBancolombia(datos));
     }
 
-    @When("^ingreso a soluciones moviles Tarjetas$")
+    @Then("^el usuario accede a pagos de soluciones móviles con tarjeta$")
     public void SolucionesMovilesTarjetas() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolucionesMovilesTarjetas.solucionesMovilesTarjetas(datos));
     }
 
-    @When("^ingreso a soluciones fijas PSE$")
+    @Then("^el usuario accede a pagos de soluciones fijas por PSE$")
     public void SolucionesFijasPSE() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolucionesFijasPSE.solucionesFijasPSE(datos));
     }
 
-    @When("^ingreso a soluciones fijas Bancolombia$")
+    @Then("^el usuario accede a pagos de soluciones fijas por Bancolombia$")
     public void SolucionesFijasBancolombia() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolucionesFijasBancolombia.solucionesFijasBancolombia(datos));
     }
 
-    @When("^ingreso a soluciones fijas tarjetas$")
+    @Then("^el usuario accede a pagos de soluciones fijas con tarjeta$")
     public void SolucionesFijasTarjetas() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolucionesFijasTarjetas.solucionesFijasTarjetas(datos));
     }
 
-    @When("^ingreso a tarjetas registradas$")
+    @Then("^el usuario visualiza las tarjetas registradas en su cuenta$")
     public void TarjetasRegistradas() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(TarjetasRegistradas.tarjetasRegistradas(datos));
     }
 
-    @When("^pagar otras facturas$")
+    @Then("^el usuario accede a la opción de pagar otras facturas$")
     public void PagarOtrasFacturas() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(PagarOtrasFacturas.pagarOtrasFacturas(datos));
     }
 
-    @When("^descarga tus facturas$")
+    @Then("^el usuario descarga sus facturas correctamente$")
     public void DescargaTusFacturas() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(DescargaTusFacturas.descargaTusFacturas(datos));
     }
 
-    @When("^resumen graficos$")
+    @Then("^el usuario visualiza el resumen gráfico de sus consumos$")
     public void ResumenGraficos() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(ResumenGraficos.resumenGraficos(datos));
     }
 
-    @When("^cambio de SIM$")
+    @Then("^el usuario realiza la solicitud de cambio de SIM$")
     public void CambioDeSIM() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(CambioDeSIM.cambioDeSIM(datos));
     }
 
-    @When("^cambio de numero$")
+    @Then("^el usuario realiza la solicitud de cambio de número$")
     public void CambioDeNumero() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(CambioDeNumero.cambioDeNumero(datos));
     }
 
-    @When("^actualizacion de datos$")
+    @Then("^el usuario actualiza su información de datos personales$")
     public void ActualizacionDeDatos() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(ActualizacionDeDatos.actualizacionDeDatos(datos));
     }
 
-    @When("^roaming internacional$")
+    @Then("^el usuario accede a la opción de roaming internacional$")
     public void Roaming() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(Roaming.roaming(datos));
     }
 
-    @When("^reposicion SIM$")
+    @Then("^el usuario realiza la solicitud de reposición de SIM$")
     public void ReposicionSIM() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(ReposicionSIM.reposicionSIM(datos));
     }
 
-    @When("^servicio tecnico$")
+    @Then("^el usuario accede a la opción de servicio técnico$")
     public void ServicioTecnico() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(ServicioTecnico.servicioTecnico(datos));
     }
 
-    @When("^paquetes de datos$")
+    @Then("^el usuario visualiza los paquetes de datos disponibles$")
     public void PaquetesDatos() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(PaquetesDatos.paquetesDatos(datos));
     }
 
-    @When("^consultar consumos$")
+    @Then("^el usuario consulta el detalle de sus consumos$")
     public void ConsultarConsumos() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(ConsultarConsumos.consultarConsumos(datos));
     }
 
-    @When("^detalle del plan$")
+    @Then("^el usuario visualiza el detalle de su plan activo$")
     public void DetalleDelPlan() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(DetalleDelPlan.detalleDelPlan(datos));
     }
 
-    @When("^Detalle cuenta maestra$")
+    @Then("^el usuario visualiza el detalle de su cuenta maestra$")
     public void DetalleCuentaMaestra() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(DetalleCuentaMaestra.detalleCuentaMaestra(datos));
     }
 
-    @When("^solicitudes a domicilio$")
+    @Then("^el usuario accede a la opción de solicitudes a domicilio$")
     public void SolicitudesDomicilio() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolicitudesDomicilio.solicitudesDomicilio(datos));
     }
 }
-
-

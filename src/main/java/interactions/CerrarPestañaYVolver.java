@@ -4,7 +4,7 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
-
+import net.thucydides.core.annotations.Step;
 import org.openqa.selenium.WebDriver;
 
 public class CerrarPestañaYVolver implements Task {
@@ -16,14 +16,10 @@ public class CerrarPestañaYVolver implements Task {
     }
 
     @Override
+    @Step("Cerrar pestana y volver a la ventana principal")
     public <T extends Actor> void performAs(T actor) {
-
         WebDriver driver = BrowseTheWeb.as(actor).getDriver();
-
-        // Cerrar pestaña secundaria
         driver.close();
-
-        // Volver a la principal
         driver.switchTo().window(ventanaPrincipal);
     }
 

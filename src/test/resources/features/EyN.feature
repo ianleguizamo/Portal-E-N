@@ -1,181 +1,177 @@
-Feature: EyN
+# language: es
+
+Característica: Portal Empresas Claro - EyN
 
   @EyN_PORT_InicioSesion
-  Scenario: Inicio de Sesion y redireccionamientos
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Redireccionamientos
-
+  Escenario: Inicio de sesión y redireccionamientos
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el sistema redirige correctamente al usuario
 
   @EyN_PORT_ValidarMiCuenta
-  Scenario: Menu desplegable - Valida mi cuenta
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Ingreso al menu desplegable
-    When Valida mi cuenta
-
+  Escenario: Validar información de mi cuenta desde el menú desplegable
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Y el usuario ingresa al menú desplegable
+    Entonces el usuario valida la información de su cuenta
 
   @EyN_PORT_GestionUsuarios
-    Scenario:  Menu desplegable - Gestion de Usuarios
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Ingreso al menu desplegable
-    When Valida gestion de usuarios
+  Escenario: Gestión de usuarios desde el menú desplegable
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Y el usuario ingresa al menú desplegable
+    Entonces el usuario valida la gestión de usuarios
 
   @EyN_PORT_AdministrarNITS
-  Scenario:  Menu desplegable - Administrar NIts del grupo
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Ingreso al menu desplegable
-    When Valida NITS del grupo
+  Escenario: Administrar NITs del grupo desde el menú desplegable
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Y el usuario ingresa al menú desplegable
+    Entonces el usuario valida los NITs del grupo empresarial
 
   @EyN_PORT_ConsultorAsignado
-  Scenario:  Menu desplegable - Consultor Asignado
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Ingreso al menu desplegable
-    When Consultor Asignado
+  Escenario: Consultar el consultor asignado desde el menú desplegable
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Y el usuario ingresa al menú desplegable
+    Entonces el usuario visualiza la información del consultor asignado
 
   @EyN_PORT_DocClaroCol
-  Scenario:  Menu desplegable - Documentacio Claro Colombia
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Ingreso al menu desplegable
-    When Documentación Claro Colombia
+  Escenario: Consultar documentación de Claro Colombia desde el menú desplegable
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Y el usuario ingresa al menú desplegable
+    Entonces el usuario accede a la documentación de Claro Colombia
 
   @EyN_PORT_CentroDeAyuda
-  Scenario:  Menu desplegable - centro de Ayuda Todas las Opciones
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Ingreso al menu desplegable
-    When Centro De Ayuda
+  Escenario: Validar todas las opciones del centro de ayuda desde el menú desplegable
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Y el usuario ingresa al menú desplegable
+    Entonces el usuario navega por todas las opciones del centro de ayuda
 
   @EyN_PORT_PagosPSE
-  Scenario: Pagos en linea - Soluciones moviles PSE
-    Given El usuario abre la página
-    When Inicio de sesion
-    When ingreso a soluciones moviles PSE
+  Escenario: Realizar pago de soluciones móviles mediante PSE
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones móviles por PSE
 
   @EyN_PORT_PagosBancolombia
-  Scenario: Pagos en linea - Soluciones moviles Bancolombia
-    Given El usuario abre la página
-    When Inicio de sesion
-    When ingreso a soluciones moviles Bancolombia
+  Escenario: Realizar pago de soluciones móviles mediante Bancolombia
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones móviles por Bancolombia
 
   @EyN_PORT_05
-  Scenario: Pagos en linea - Soluciones moviles Tarjetas
-    Given El usuario abre la página
-    When Inicio de sesion
-    When ingreso a soluciones moviles Tarjetas
+  Escenario: Realizar pago de soluciones móviles con tarjeta de crédito
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones móviles con tarjeta
 
   @EyN_PORT_06
-  Scenario: Pagos en linea - Soluciones fijas
-    Given El usuario abre la página
-    When Inicio de sesion
-    When ingreso a soluciones fijas PSE
+  Escenario: Realizar pago de soluciones fijas mediante PSE
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones fijas por PSE
 
   @EyN_PORT_07
-  Scenario: Pagos en linea - Soluciones fijas Bancolombia
-    Given El usuario abre la página
-    When Inicio de sesion
-    When ingreso a soluciones fijas Bancolombia
+  Escenario: Realizar pago de soluciones fijas mediante Bancolombia
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones fijas por Bancolombia
 
   @EyN_PORT_08
-  Scenario: Pagos en linea - Soluciones fijas tarjetas
-    Given El usuario abre la página
-    When Inicio de sesion
-    When ingreso a soluciones fijas tarjetas
+  Escenario: Realizar pago de soluciones fijas con tarjeta de crédito
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones fijas con tarjeta
 
   @EyN_PORT_09
-  Scenario: Pagos en linea - tarjetas registradas
-    Given El usuario abre la página
-    When Inicio de sesion
-    When ingreso a tarjetas registradas
+  Escenario: Consultar tarjetas registradas en el portal
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario visualiza las tarjetas registradas en su cuenta
 
   @EyN_PORT_10
-  Scenario: Pagos en linea - tarjetas registradas
-    Given El usuario abre la página
-    When Inicio de sesion
-    When pagar otras facturas
+  Escenario: Pagar otras facturas desde el portal
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a la opción de pagar otras facturas
 
   @EyN_PORT_11
-  Scenario: consulta tus facturas - tarjetas registradas
-    Given El usuario abre la página
-    When Inicio de sesion
-    When descarga tus facturas
+  Escenario: Descargar facturas desde el portal
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario descarga sus facturas correctamente
 
-  @EyN_PORT_11
-  Scenario: consulta tus facturas - tarjetas registradas
-    Given El usuario abre la página
-    When Inicio de sesion
-    When resumen graficos
+  @EyN_PORT_11B
+  Escenario: Visualizar resumen gráfico de consumos
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario visualiza el resumen gráfico de sus consumos
 
   @EyN_PORT_12
-  Scenario: soluciones moviles - cambio de sim
-    Given El usuario abre la página
-    When Inicio de sesion
-    When cambio de SIM
+  Escenario: Solicitar cambio de SIM en soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario realiza la solicitud de cambio de SIM
 
   @EyN_PORT_13
-  Scenario: soluciones moviles - cambio de numero
-    Given El usuario abre la página
-    When Inicio de sesion
-    When cambio de numero
+  Escenario: Solicitar cambio de número en soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario realiza la solicitud de cambio de número
 
   @EyN_PORT_14
-  Scenario: soluciones moviles - actualizacion de datos
-    Given El usuario abre la página
-    When Inicio de sesion
-    When actualizacion de datos
-
+  Escenario: Actualizar datos personales en soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario actualiza su información de datos personales
 
   @EyN_PORT_15
-  Scenario: soluciones moviles - roaming
-    Given El usuario abre la página
-    When Inicio de sesion
-    When roaming internacional
+  Escenario: Activar roaming internacional en soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a la opción de roaming internacional
 
   @EyN_PORT_16
-  Scenario: soluciones moviles - reposicion SIM
-    Given El usuario abre la página
-    When Inicio de sesion
-    When reposicion SIM
+  Escenario: Solicitar reposición de SIM en soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario realiza la solicitud de reposición de SIM
 
   @EyN_PORT_17
-  Scenario: soluciones moviles - servicio tecnico
-    Given El usuario abre la página
-    When Inicio de sesion
-    When servicio tecnico
+  Escenario: Solicitar servicio técnico desde soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a la opción de servicio técnico
 
   @EyN_PORT_18
-  Scenario: soluciones moviles - paquetes de datos
-    Given El usuario abre la página
-    When Inicio de sesion
-    When paquetes de datos
+  Escenario: Consultar y activar paquetes de datos en soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario visualiza los paquetes de datos disponibles
 
   @EyN_PORT_19
-  Scenario: soluciones moviles - consultar consumos
-    Given El usuario abre la página
-    When Inicio de sesion
-    When consultar consumos
+  Escenario: Consultar consumos desde soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario consulta el detalle de sus consumos
 
   @EyN_PORT_20
-  Scenario: soluciones moviles - detalle del plan
-    Given El usuario abre la página
-    When Inicio de sesion
-    When detalle del plan
+  Escenario: Consultar detalle del plan desde soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario visualiza el detalle de su plan activo
 
   @EyN_PORT_21
-  Scenario: soluciones moviles - detalle cuenta maestra
-    Given El usuario abre la página
-    When Inicio de sesion
-    When Detalle cuenta maestra
+  Escenario: Consultar detalle de la cuenta maestra desde soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario visualiza el detalle de su cuenta maestra
 
   @EyN_PORT_22
-  Scenario: soluciones moviles - solicitudes a domicilio
-    Given El usuario abre la página
-    When Inicio de sesion
-    When solicitudes a domicilio
-
-
-
+  Escenario: Solicitar servicios a domicilio desde soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a la opción de solicitudes a domicilio

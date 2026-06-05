@@ -15,13 +15,19 @@ public class WaitFor implements Interaction {
     this.var = var;
   }
 
+  @Override
+  @Step("Espera de {0} milisegundos")
+  public <T extends Actor> void performAs(T actor) {
+    new InternalSystemClock().pauseFor(var);
+  }
+
+  /** Aparece en el reporte de Serenity */
   public static WaitFor aTime(int var) {
     return instrumented(WaitFor.class, var);
   }
 
-  @Override
-  @Step("{0}")
-  public <T extends Actor> void performAs(T actor) {
+  /** NO aparece en el reporte de Serenity */
+  public static void silencioso(int var) {
     new InternalSystemClock().pauseFor(var);
   }
 }

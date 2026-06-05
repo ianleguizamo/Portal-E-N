@@ -3,6 +3,9 @@ package tasks.PortalEmpresas;
 import static userinterfaces.CmaxPage.*;
 
 import interactions.WaitFor;
+import interactions.EnterPasswordSecure;
+import interactions.IngresarTexto;
+import interactions.JavaScriptSmartClick;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,14 +14,11 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.actions.Enter;
-import net.serenitybdd.screenplay.actions.JavaScriptClick;
-import net.serenitybdd.screenplay.ensure.Ensure;
+import net.thucydides.core.annotations.Step;
 import utils.EvidenciaUtils;
 
 public class RealizarIngreso implements Task {
-    Map<String, String> data = new HashMap<String, String>();
+    Map<String, String> data = new HashMap<>();
     private static final String paso = "Realizar inicio de sesion";
 
     public RealizarIngreso(Map<String, String> data) {
@@ -30,17 +30,24 @@ public class RealizarIngreso implements Task {
     }
 
     @Override
+    @Step("Realizar inicio de sesion en el portal")
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
-                Enter.theValue(data.get("Usuario")).into(TXT_USUARIO),
-                Enter.theValue(data.get("Contrasena")).into(TXT_CONTRASENA),
-                Ensure.that(BTN_INGRESAR).isDisplayed(),
-                JavaScriptClick.on(BTN_INGRESAR),
-                WaitFor.aTime(5000),
-                JavaScriptClick.on(BTN_ACEPTAR),
-                WaitFor.aTime(5000)
+                IngresarTexto.con(data.get("Usuario"), "correo electronico", TXT_USUARIO),
+                EnterPasswordSecure.into(TXT_CONTRASENA, data.get("Contrasena")),
+                JavaScriptSmartClick.on(BTN_INGRESAR)
         );
 
+        WaitFor.silencioso(5000);
+
+        try {
+            if (BTN_ACEPTAR.resolveFor(actor).isPresent()) {
+                actor.attemptsTo(JavaScriptSmartClick.on(BTN_ACEPTAR));
+            }
+        } catch (Exception e) {
+        }
+
+        WaitFor.silencioso(5000);
         EvidenciaUtils.registrarCaptura(paso);
     }
 }
