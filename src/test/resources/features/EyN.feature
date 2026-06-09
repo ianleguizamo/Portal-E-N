@@ -2,89 +2,113 @@
 
 Característica: Portal Empresas Claro - EyN
 
-  @EyN_PORT_InicioSesion
+  @EyN_PORT_Inicio_Sesion
   Escenario: Inicio de sesión y redireccionamientos
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el sistema redirige correctamente al usuario
 
-  @EyN_PORT_ValidarMiCuenta
+  @EyN_PORT_Validar_MiCuenta
   Escenario: Validar información de mi cuenta desde el menú desplegable
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Y el usuario ingresa al menú desplegable
     Entonces el usuario valida la información de su cuenta
 
-  @EyN_PORT_GestionUsuarios
+  @EyN_PORT_Gestion_Usuarios
   Escenario: Gestión de usuarios desde el menú desplegable
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Y el usuario ingresa al menú desplegable
     Entonces el usuario valida la gestión de usuarios
 
-  @EyN_PORT_AdministrarNITS
+  @EyN_PORT_Administrar_NITS
   Escenario: Administrar NITs del grupo desde el menú desplegable
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Y el usuario ingresa al menú desplegable
     Entonces el usuario valida los NITs del grupo empresarial
 
-  @EyN_PORT_ConsultorAsignado
+  @EyN_PORT_Consultor_Asignado
   Escenario: Consultar el consultor asignado desde el menú desplegable
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Y el usuario ingresa al menú desplegable
     Entonces el usuario visualiza la información del consultor asignado
 
-  @EyN_PORT_DocClaroCol
+  @EyN_PORT_Doc_Claro_Col
   Escenario: Consultar documentación de Claro Colombia desde el menú desplegable
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Y el usuario ingresa al menú desplegable
     Entonces el usuario accede a la documentación de Claro Colombia
 
-  @EyN_PORT_CentroDeAyuda
+  @EyN_PORT_Centro_De_Ayuda
   Escenario: Validar todas las opciones del centro de ayuda desde el menú desplegable
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Y el usuario ingresa al menú desplegable
     Entonces el usuario navega por todas las opciones del centro de ayuda
 
-  @EyN_PORT_PagosPSE
+  @EyN_PORT_Pagos_PSE
   Escenario: Realizar pago de soluciones móviles mediante PSE
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el usuario accede a pagos de soluciones móviles por PSE
 
-  @EyN_PORT_PagosBancolombia
+  @EyN_PORT_Pagos_Bancolombia
   Escenario: Realizar pago de soluciones móviles mediante Bancolombia
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el usuario accede a pagos de soluciones móviles por Bancolombia
 
-  @EyN_PORT_05
+  @EyN_PORT_Pagos_Tarjeta
   Escenario: Realizar pago de soluciones móviles con tarjeta de crédito
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el usuario accede a pagos de soluciones móviles con tarjeta
 
-  @EyN_PORT_06
+  @EyN_PORT_Pagos_Google_Play
+  Escenario: Realizar pago de soluciones móviles con Google Play
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones móviles con Google Play
+
+  @EyN_PORT_Pagos_Tarjeta_Codensa
+  Escenario: Realizar pago de soluciones móviles con tarjeta Codensa
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones móviles con Tarjeta Codensa
+
+  @EyN_PORT_Pagos_Fija_PSE
   Escenario: Realizar pago de soluciones fijas mediante PSE
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el usuario accede a pagos de soluciones fijas por PSE
 
-  @EyN_PORT_07
+  @EyN_PORT_Pagos_Fija_Bancolombia
   Escenario: Realizar pago de soluciones fijas mediante Bancolombia
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el usuario accede a pagos de soluciones fijas por Bancolombia
 
-  @EyN_PORT_08
+  @EyN_PORT_Pagos_Fija_Tarjeta
   Escenario: Realizar pago de soluciones fijas con tarjeta de crédito
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el usuario accede a pagos de soluciones fijas con tarjeta
+
+  @EyN_PORT_Pagos_Fija_Google_Play
+  Escenario: Realizar pago de soluciones fijas con tarjeta de crédito
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones fijas con google play
+
+  @EyN_PORT_Pagos_Fija_Tarjeta_Codensa
+  Escenario: Realizar pago de soluciones fijas con tarjeta de crédito
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario accede a pagos de soluciones fijas con Google Play
 
   @EyN_PORT_09
   Escenario: Consultar tarjetas registradas en el portal

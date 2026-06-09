@@ -12,7 +12,7 @@ import java.io.IOException;
         features = "src/test/resources/features",
         glue = {"stepDefinitions", "utils", "hooks"},
         snippets = SnippetType.CAMELCASE,
-            tags = "@EyN_PORT_CentroDeAyuda"
+            tags = "@EyN_PORT_Pagos_Fija_Google_Play"
 )
 
 @RunWith(CustomRunner.class)

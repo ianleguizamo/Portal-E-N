@@ -9,6 +9,7 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
+import net.serenitybdd.screenplay.conditions.Check;
 import net.thucydides.core.annotations.Step;
 
 import org.openqa.selenium.WebDriver;
@@ -21,29 +22,29 @@ import utils.EvidenciaUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SolucionesFijasPSE implements Task {
+public class SolucionesMovilesTarjetaCodensa implements Task {
 
     private static final Logger log =
-            LoggerFactory.getLogger(SolucionesFijasPSE.class);
+            LoggerFactory.getLogger(SolucionesMovilesTarjetaCodensa.class);
 
     Map<String, String> data = new HashMap<>();
 
-    public SolucionesFijasPSE(Map<String, String> data) {
+    public SolucionesMovilesTarjetaCodensa(Map<String, String> data) {
         this.data = data;
     }
 
     private static final String paso1 = "Selecciona Pagos en linea";
-    private static final String paso2 = "Selecciona Pago de soluciones fijas";
-    private static final String paso3 = "Selecciona metodo de pago PSE";
-    private static final String paso4 = "Validacion ventana confirmacion PSE soluciones fijas";
+    private static final String paso2 = "Selecciona Pago de soluciones moviles";
+    private static final String paso3 = "Selecciona metodo de pago Tarjeta Codensa";
+    private static final String paso4 = "Validacion ventana confirmacion pago Tarjeta Codensa";
 
-    public static Performable solucionesFijasPSE(Map<String, String> data) {
-        return Instrumented.instanceOf(SolucionesFijasPSE.class)
+    public static Performable solucionesMovilesTarjetaCodensa(Map<String, String> data) {
+        return Instrumented.instanceOf(SolucionesMovilesTarjetaCodensa.class)
                 .withProperties(data);
     }
 
     @Override
-    @Step("Validar pago de soluciones fijas por PSE")
+    @Step("Validar pago de soluciones moviles con Tarjeta Codensa")
     public <T extends Actor> void performAs(T actor) {
 
         WebDriver driver = BrowseTheWeb.as(actor).getDriver();
@@ -59,18 +60,27 @@ public class SolucionesFijasPSE implements Task {
 
         actor.attemptsTo(
                 WaitFor.aTime(2000),
-                SmartClick.on(PAGO_SOLUCIONES_FIJAS_HFC),
+                SmartClick.on(PAGO_SOLUCIONES_MOVILES),
                 WaitFor.aTime(2000)
         );
         EvidenciaUtils.registrarCaptura(paso2);
 
         actor.attemptsTo(
-                SmartClick.on(CHECKBOX_CUSTOM),
+                Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
+                        .andIfSo(
+                                SmartClick.on(CHECKBOX_FILA),
+                                WaitFor.aTime(2000),
+                                WaitForResponse.withTarget(BOTON_PAGAR),
+                                SmartClick.on(BOTON_PAGAR)
+                        )
+                        .otherwise(
+                                WaitFor.aTime(1000)
+                        )
+        );
+
+        actor.attemptsTo(
                 WaitFor.aTime(2000),
-                WaitForResponse.withTarget(BOTON_PAGAR),
-                SmartClick.on(BOTON_PAGAR),
-                WaitFor.aTime(2000),
-                SmartClick.on(METODO_PSE),
+                SmartClick.on(METODO_TARJETA_CODENSA),
                 WaitFor.aTime(2000)
         );
         EvidenciaUtils.registrarCaptura(paso3);
@@ -94,15 +104,15 @@ public class SolucionesFijasPSE implements Task {
 
         // Validar contenido de la ventana
         String contenidoPagina = driver.getPageSource();
-        boolean paginaPresente = contenidoPagina.contains("PSE")
-                || contenidoPagina.contains("Número de Factura")
-                || contenidoPagina.contains("Numero de Factura");
+        boolean paginaPresente = contenidoPagina.contains("Número de Factura")
+                || contenidoPagina.contains("Numero de Factura")
+                || contenidoPagina.contains("Codensa");
 
         if (paginaPresente) {
-            log.info("Ventana de confirmacion PSE soluciones fijas validada correctamente");
+            log.info("Ventana de confirmacion Tarjeta Codensa validada correctamente");
             EvidenciaUtils.registrarCaptura(paso4);
         } else {
-            log.warn("No se encontro contenido esperado en la ventana de confirmacion PSE");
+            log.warn("No se encontro contenido esperado en la ventana de confirmacion Tarjeta Codensa");
             EvidenciaUtils.registrarCaptura(paso4 + " - CONTENIDO NO ENCONTRADO");
         }
 

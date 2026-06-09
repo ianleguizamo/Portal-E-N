@@ -22,7 +22,6 @@ public class CapturasPantallasWeb {
     private static final Map<String, String> titulosCapturas = new HashMap<>();
 
     public static String capturaPantalla(String nombreCaptura, String titulo) {
-
         try {
             File folder = new File(RUTA_CAPTURAS);
             if (!folder.exists()) folder.mkdirs();
@@ -51,5 +50,27 @@ public class CapturasPantallasWeb {
 
     public static String obtenerTitulo(String nombreArchivo) {
         return titulosCapturas.getOrDefault(nombreArchivo, "Sin título");
+    }
+
+    // Elimina todas las capturas de la carpeta y resetea el contador
+    public static void limpiarCapturas() {
+        File carpeta = new File(RUTA_CAPTURAS);
+        if (carpeta.exists() && carpeta.isDirectory()) {
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    if (archivo.getName().endsWith(".png")) {
+                        if (archivo.delete()) {
+                            logger.info("Captura eliminada: " + archivo.getName());
+                        } else {
+                            logger.warning("No se pudo eliminar: " + archivo.getName());
+                        }
+                    }
+                }
+            }
+        }
+        titulosCapturas.clear();
+        contador = 1;
+        logger.info("Carpeta Capturas limpiada correctamente.");
     }
 }

@@ -282,7 +282,13 @@ public class CmaxPage {
           .located(By.cssSelector("button.continue-btn"));
 
   public static final Target METODO_TARJETA = Target.the("método de pago Tarjeta Débito o Crédito")
-          .located(By.xpath("//div[contains(@class,'method')][.//div[text()='Tarjeta de Débito/Crédito']]"));
+          .located(By.cssSelector("#senna_surface1 > div.ReactModalPortal > div > div > div > div.payment-methods > div:nth-child(3)"));
+
+  public static final Target METODO_GOOOGLE_PLAY = Target.the("método de pago Google Play")
+          .located(By.cssSelector("#senna_surface1 > div.ReactModalPortal > div > div > div > div.payment-methods > div:nth-child(4)"));
+
+  public static final Target METODO_TARJETA_CODENSA = Target.the("método de pago Tarjeta Codensa")
+          .located(By.cssSelector("#senna_surface1 > div.ReactModalPortal > div > div > div > div.payment-methods > div:nth-child(5)"));
 
   public static final Target CAMPANA =
           Target.the("Icono campana de notificaciones")

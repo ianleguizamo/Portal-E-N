@@ -115,6 +115,20 @@ public class SaldoSteps {
                 .attemptsTo(SolucionesMovilesTarjetas.solucionesMovilesTarjetas(datos));
     }
 
+    @Then("^el usuario accede a pagos de soluciones móviles con Google Play$")
+    public void SolucionesMovilesGooglePlay() {
+        Map<String, String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(SolucionesMovilesGooglePlay.solucionesMovilesGooglePlay(datos));
+    }
+
+    @Then("^el usuario accede a pagos de soluciones móviles con Tarjeta Codensa$")
+    public void SolucionesMovilesTarjetaCodensa() {
+        Map<String, String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(SolucionesMovilesTarjetaCodensa.solucionesMovilesTarjetaCodensa(datos));
+    }
+
     @Then("^el usuario accede a pagos de soluciones fijas por PSE$")
     public void SolucionesFijasPSE() {
         Map<String, String> datos = TestData.obtenerDatos();
@@ -134,6 +148,20 @@ public class SaldoSteps {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
                 .attemptsTo(SolucionesFijasTarjetas.solucionesFijasTarjetas(datos));
+    }
+
+    @Then("^el usuario accede a pagos de soluciones fijas con google play$")
+    public void SolucionesFijasGooglePlay() {
+        Map<String, String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(SolucionesFijasGooglePlay.solucionesFijasGooglePlay(datos));
+    }
+
+    @Then("^el usuario accede a pagos de soluciones fijas con tarjeta codensa$")
+    public void SolucionesFijasGooglePlay() {
+        Map<String, String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(SolucionesFijasGooglePlay.solucionesFijasGooglePlay(datos));
     }
 
     @Then("^el usuario visualiza las tarjetas registradas en su cuenta$")

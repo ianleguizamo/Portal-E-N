@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.EvidenciaUtils;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,11 +37,11 @@ public class SolucionesMovilesBancolombia implements Task {
     private static final String paso2 = "Selecciona Pago de soluciones moviles";
     private static final String paso3 = "Selecciona Boton Pagar";
     private static final String paso4 = "Selecciona metodo de pago Bancolombia";
+    private static final String paso5 = "Validacion ventana confirmacion pago";
 
     public static Performable solucionesMovilesBancolombia(
             Map<String, String> data
     ) {
-
         return Instrumented.instanceOf(SolucionesMovilesBancolombia.class)
                 .withProperties(data);
     }
@@ -52,18 +51,15 @@ public class SolucionesMovilesBancolombia implements Task {
 
         WebDriver driver = BrowseTheWeb.as(actor).getDriver();
 
-        // Ventana principal
-
         String ventanaPrincipal = driver.getWindowHandle();
 
-        WebDriverWait wait = new WebDriverWait(driver, 1);
+        WebDriverWait wait = new WebDriverWait(driver, 10);
 
         actor.attemptsTo(
                 WaitFor.aTime(2000),
                 Click.on(PAGOS_EN_LINEA),
                 WaitFor.aTime(2000)
         );
-
         EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
@@ -71,7 +67,6 @@ public class SolucionesMovilesBancolombia implements Task {
                 Click.on(PAGO_SOLUCIONES_MOVILES),
                 WaitFor.aTime(2000)
         );
-
         EvidenciaUtils.registrarCaptura(paso2);
 
         actor.attemptsTo(
@@ -85,7 +80,6 @@ public class SolucionesMovilesBancolombia implements Task {
                                 WaitFor.aTime(1000)
                         )
         );
-
         EvidenciaUtils.registrarCaptura(paso3);
 
         actor.attemptsTo(
@@ -98,34 +92,37 @@ public class SolucionesMovilesBancolombia implements Task {
                                 WaitFor.aTime(1000)
                         )
         );
-
         EvidenciaUtils.registrarCaptura(paso4);
 
         actor.attemptsTo(
                 SmartClick.on(BOTON_CONTINUAR)
         );
 
-        // Esperar nueva pestaña
-
         wait.until(d -> d.getWindowHandles().size() > 1);
 
-        // Cambiar a nueva pestaña
-
+        // Cambiar a la nueva pestaña
         for (String ventana : driver.getWindowHandles()) {
-
             if (!ventana.equals(ventanaPrincipal)) {
-
                 driver.switchTo().window(ventana);
-
                 break;
             }
         }
 
         actor.attemptsTo(
-                WaitFor.aTime(1000)
+                WaitFor.aTime(3000)
         );
 
+        String contenidoPagina = driver.getPageSource();
+        boolean facturaPresente = contenidoPagina.contains("Número de Factura")
+                || contenidoPagina.contains("Numero de Factura");
 
+        if (facturaPresente) {
+            log.info(" Ventana de confirmación validada: 'Número de Factura' presente");
+            EvidenciaUtils.registrarCaptura(paso5);
+        } else {
+            log.warn("⚠️ No se encontró 'Número de Factura' en la ventana de confirmación");
+            EvidenciaUtils.registrarCaptura(paso5 + " - TEXTO NO ENCONTRADO");
+        }
 
         actor.attemptsTo(
                 CerrarPestañaYVolver.ahora(ventanaPrincipal)

@@ -3,6 +3,7 @@ package hooks;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import utils.CapturasPantallasWeb;
 import utils.WordWeb;
 
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ public class ReportHooksWeb {
     public void beforeScenario(Scenario scenario) {
         EstadoPrueba.inicio = System.currentTimeMillis();
 
-        // Extrae el primer tag del escenario
         nombreFeature = scenario.getSourceTagNames()
                 .stream()
                 .filter(t -> t.startsWith("@"))
@@ -56,6 +56,9 @@ public class ReportHooksWeb {
                 pasoFallido,
                 estadoFinal
         );
+
+        // Limpiar capturas después de generar el Word
+        CapturasPantallasWeb.limpiarCapturas();
 
         // Limpiar para el siguiente escenario
         pasosEjecutados.clear();

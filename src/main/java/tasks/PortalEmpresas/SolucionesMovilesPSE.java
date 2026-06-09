@@ -57,17 +57,17 @@ public class SolucionesMovilesPSE implements Task {
         WebDriverWait wait = new WebDriverWait(driver, 10);
 
         actor.attemptsTo(
-                WaitFor.aTime(5000),
+                WaitFor.aTime(2000),
                 Click.on(PAGOS_EN_LINEA),
-                WaitFor.aTime(5000)
+                WaitFor.aTime(2000)
         );
 
         EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
-                WaitFor.aTime(5000),
+                WaitFor.aTime(2000),
                 Click.on(PAGO_SOLUCIONES_MOVILES),
-                WaitFor.aTime(5000)
+                WaitFor.aTime(2000)
         );
 
         EvidenciaUtils.registrarCaptura(paso2);
@@ -75,7 +75,7 @@ public class SolucionesMovilesPSE implements Task {
         actor.attemptsTo(
                 Click.on(CHECKBOX_CUSTOM),
 
-                WaitFor.aTime(5000),
+                WaitFor.aTime(2000),
 
                 WaitForResponse.withTarget(BOTON_PAGAR),
 
@@ -85,10 +85,10 @@ public class SolucionesMovilesPSE implements Task {
 
 
         actor.attemptsTo(
-                WaitFor.aTime(5000),
+                WaitFor.aTime(2000),
                 WaitForResponse.withTarget(METODO_PSE),
                 Click.on(METODO_PSE),
-                WaitFor.aTime(5000)
+                WaitFor.aTime(2000)
         );
 
         EvidenciaUtils.registrarCaptura(paso3);
@@ -114,7 +114,7 @@ public class SolucionesMovilesPSE implements Task {
         }
 
         actor.attemptsTo(
-                WaitFor.aTime(5000)
+                WaitFor.aTime(2000)
         );
 
 
