@@ -108,7 +108,7 @@ Característica: Portal Empresas Claro - EyN
   Escenario: Realizar pago de soluciones fijas con tarjeta de crédito
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
-    Entonces el usuario accede a pagos de soluciones fijas con Google Play
+    Entonces el usuario accede a pagos de soluciones fijas con tarjeta codensa
 
   @EyN_PORT_09
   Escenario: Consultar tarjetas registradas en el portal

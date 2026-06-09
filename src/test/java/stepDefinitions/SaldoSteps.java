@@ -158,10 +158,10 @@ public class SaldoSteps {
     }
 
     @Then("^el usuario accede a pagos de soluciones fijas con tarjeta codensa$")
-    public void SolucionesFijasGooglePlay() {
+    public void SolucionesFijasTarjetaCodensa() {
         Map<String, String> datos = TestData.obtenerDatos();
         theActorInTheSpotlight()
-                .attemptsTo(SolucionesFijasGooglePlay.solucionesFijasGooglePlay(datos));
+                .attemptsTo(SolucionesFijasTarjetaCodensa.solucionesFijasTarjetaCodensa(datos));
     }
 
     @Then("^el usuario visualiza las tarjetas registradas en su cuenta$")
