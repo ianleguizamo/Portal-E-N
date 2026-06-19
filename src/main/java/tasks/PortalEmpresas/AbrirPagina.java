@@ -20,6 +20,6 @@ public class AbrirPagina implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(Open.url(url));
-        System.out.println("🌐 Página abierta correctamente en: " + url);
+        System.out.println("🌐 Página abierta correctamente en:  " + url);
     }
 }
