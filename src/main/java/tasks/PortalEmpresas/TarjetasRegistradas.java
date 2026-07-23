@@ -1,6 +1,5 @@
 package tasks.PortalEmpresas;
 
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static userinterfaces.CmaxPage.*;
 
 import interactions.*;
@@ -9,22 +8,22 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.conditions.Check;
-import net.serenitybdd.screenplay.waits.WaitUntil;
-import org.openqa.selenium.remote.server.handler.SwitchToFrame;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
+import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
+import net.thucydides.core.annotations.Step;
+import org.openqa.selenium.WebDriver;
+import utils.CerrarEncuestaQualtrics;
+import utils.EvidenciaUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TarjetasRegistradas implements Task {
 
-
-    private static final Logger log = LoggerFactory.getLogger(SolucionesFijasTarjetas.class);
     Map<String, String> data = new HashMap<>();
+
+    private static final String paso1 = "Selecciona Pagos en linea";
+    private static final String paso2 = "Selecciona Tarjetas registradas";
+    private static final String paso3 = "Clic en boton registrar nueva tarjeta";
 
     public TarjetasRegistradas(Map<String, String> data) {
         this.data = data;
@@ -36,38 +35,34 @@ public class TarjetasRegistradas implements Task {
     }
 
     @Override
+    @Step("Validar tarjetas registradas")
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(PAGOS_EN_LINEA)
+                SmartClick.on(PAGOS_EN_LINEA)
         );
-
-        CapturasPantallasWeb.capturaPantalla("Pagos en linea", "Pagos en linea");
+        EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
-                Click.on(TARJETAS_REGISTRADAS),
-
-                SwitchToSurveyIframe.now(),
-                WaitForResponse.withTarget(BOTON_CERRAR_ENCUESTA),
-                Click.on(BOTON_CERRAR_ENCUESTA),
-                SwitchToDefaultContent.now()
-
-
+                SmartClick.on(TARJETAS_REGISTRADAS)
         );
+        EvidenciaUtils.registrarCaptura(paso2);
 
-        CapturasPantallasWeb.capturaPantalla("Tarjetas registradas", "Tarjetas registradas");
+        WaitFor.silencioso(3000);
+
+        CerrarEncuestaQualtrics.siAparece(actor);
+
+        WaitFor.silencioso(5000);
+
+        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
+        driver.switchTo().frame("my_iframe");
+
+        WaitFor.silencioso(2000);
 
         actor.attemptsTo(
-                WaitFor.aTime(300),
-                Click.on(BOTON_SUMAR_TARJETA),
+                JavaScriptSmartClick.on(BOTON_SUMAR_TARJETA),
                 WaitForResponse.withTarget(LABEL_NRO_DOCUMENTO_TITULAR)
-                       );
-
-        CapturasPantallasWeb.capturaPantalla(
-                "Tarjetas",
-                "Tarjetas"
         );
-
-
+        EvidenciaUtils.registrarCaptura(paso3);
     }
 }

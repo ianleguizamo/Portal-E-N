@@ -178,6 +178,13 @@ public class SaldoSteps {
                 .attemptsTo(PagarOtrasFacturas.pagarOtrasFacturas(datos));
     }
 
+    @Then("^el usuario accede a la opción Pago automático de facturas$")
+    public void PagoAutoFacturas() {
+        Map<String, String> datos = TestData.obtenerDatos();
+        theActorInTheSpotlight()
+                .attemptsTo(PagosAutoFacturasSolucionesMoviles.pagosAutoFacturas(datos));
+    }
+
     @Then("^el usuario descarga sus facturas correctamente$")
     public void DescargaTusFacturas() {
         Map<String, String> datos = TestData.obtenerDatos();

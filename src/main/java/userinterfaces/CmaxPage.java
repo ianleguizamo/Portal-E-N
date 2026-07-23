@@ -1,6 +1,5 @@
 package userinterfaces;
 
-import interactions.scroll.Scroll;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.targets.Target;
 import org.apache.poi.ss.formula.functions.T;
@@ -182,15 +181,18 @@ public class CmaxPage {
                   .located(By.cssSelector("td[role='gridcell'] button.btnResumeViewer"));
 
   public static final Target TARJETAS_REGISTRADAS = Target.the("Tarjetas registradas")
-          .located(By.xpath("//a[contains(@href,'/recordatorio-tarjeta')]"));
+          .located(By.xpath("//*[@id=\"js-portlet-_censubmenuportlet_INSTANCE_0fRD5KQ5N9Ch_\"]/div/div/div/div[2]/div[7]"));
 
   public static final Target REGISTRAR_NUEVA_TARJETA = Target.the("Registrar una nueva tarjeta")
           .located(By.xpath("//a[contains(@href,'asociarTarjetaClaroPay')]"));
 
   public static final Target BOTON_SUMAR_TARJETA =
           Target.the("Botón registrar nueva tarjeta")
-                  .located(By.xpath("//a[.//img[contains(@src,'icono-sumar.svg')]]"));
+                  .located(By.cssSelector("#formOperacion > article > div:nth-child(1) > div > span > a > img"));
 
+  public static final Target PAGO_AUTOMATICO_FACTURAS =
+          Target.the("Pago automatico de facturas")
+                  .located(By.xpath("//*[@id=\"js-portlet-_censubmenuportlet_INSTANCE_0fRD5KQ5N9Ch_\"]/div/div/div/div[2]/div[5]/div/a/div[3]"));
 
   public static final Target PAGO_SOLUCIONES_MOVILES = Target.the("botón Pago de soluciones móviles")
           .located(By.cssSelector("a[href='/group/guest/pago-en-linea-movil']"));
@@ -249,8 +251,12 @@ public class CmaxPage {
   public static final Target CONTENEDOR_OPINION = Target.the("contenedor mensaje de opinión")
           .located(By.xpath("//div[@style='text-align: center;' and .//strong[contains(text(),'Tu opinión es importante')]]"));
 
+  public static final Target DESCARGAR_ARCHIVO =
+          Target.the("Descargar archivo")
+                  .located(By.xpath("//SELECTOR_PROVISIONAL"));
+
   public static final Target BOTON_CERRAR_ENCUESTA = Target.the("botón cerrar encuesta Qualtrics")
-          .located(By.xpath("//img[contains(@src,'svg-close-btn-black')]"));
+          .located(By.xpath("//*[@id=\"formOperacion\"]/article[2]/div/input"));
 
   public static final Target DEPARTMENT_INPUT =
           Target.the("Campo departamento")
@@ -270,7 +276,7 @@ public class CmaxPage {
           .located(By.xpath("//button[contains(@class,'pagar-btn-red') and text()='Pagar']"));
 
   public static final Target LABEL_NRO_DOCUMENTO_TITULAR = Target.the("Label número de documento del titular")
-          .located(By.xpath("//label[normalize-space()='Nro de Documento del titular*:']"));
+          .located(By.xpath("//*[@id=\"NUMERO_DOCTARH\"]"));
 
   public static final Target METODO_PSE = Target.the("método de pago PSE")
           .located(By.cssSelector("div.method.pse"));
@@ -346,5 +352,17 @@ public class CmaxPage {
   public static final Target TXT_MSISDN_BUSCADO =
       Target.the("Texto de la linea consultada")
           .located(By.xpath("//*[@id=\"SearchResults\"]/tbody[2]/tr/td[2]/a"));
+
+  public static final Target SOLUCIONES_MOVILES2 = Target.the("Soluciones Móviles 2")
+          .located(By.xpath("//*[@id=\"formOperacion\"]/article[2]/a[1]/div/div"));
+
+  public static final Target ELIMINAR_METODO_PAGO = Target.the("Eliminar metodo de pago")
+          .located(By.xpath("//*[@id=\"nav-todas\"]/table/tbody/tr[1]/td[4]/span/a/img"));
+
+  public static final Target CANCELAR= Target.the("Cancelar")
+          .located(By.xpath("//*[@id=\"AlertaEliminar\"]/div/div/div[3]/button[2]"));
+
+  public static final Target INSCRIBIR_TARJETA = Target.the("Inscribir tarjeta  ")
+          .located(By.xpath("//*[@id=\"BTN_INSCRIBIR_MD\"]/img"));
 
 }

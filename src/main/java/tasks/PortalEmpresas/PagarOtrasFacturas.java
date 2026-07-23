@@ -36,7 +36,7 @@ public class PagarOtrasFacturas implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(PAGOS_EN_LINEA)
+                SmartClick.on(PAGOS_EN_LINEA)
         );
 
         CapturasPantallasWeb.capturaPantalla("Pagos en linea", "Pagos en linea");

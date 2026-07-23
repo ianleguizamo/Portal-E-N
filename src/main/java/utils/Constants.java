@@ -4,6 +4,7 @@ import java.util.Locale;
 
 public class Constants {
 
+  public static final String PAGOS_AUTOMATICOS = "Pagos automáticos";
   public static final String COMPRA_EXITOSA = "Compra Exitosa.";
   public static final String INSTALACION = "fue instalado.";
   public static final String ACEPTAR = "ACEPTAR";
@@ -118,26 +119,5 @@ public class Constants {
   public static final String USAR_SIN_UNA_CUENTA = "Usar sin una cuenta";
   public static final String SMS_CODIGO_OTP = "A continuación te enviaremos un SMS con un código de verificación para validar tu número de celular.";
 
-
-
-  // CONSTANTES CMAX
-  public static final String PASO_VALIDACION_DATOS_COMPRA = "Se validan los datos de compra: ";
-  public static final String PASO_VALIDACION_OFERTAS = "Se validan las ofertas activas";
-  public static final String PASO_VALIDACION_FIRMAS = "Se verifican firmas y factor multiplicador: ";
-  public static final String COLUMN_VALOR_XPATH = ".//td[6]";
-  public static final String COLUMN_FECHA_XPATH = ".//td[2]";
-  public static final String COLUMN_LUPA_XPATH = ".//td[1]";
-  public static final String COLUMN_PAQUETE_XPATH = ".//td[2]";
-  public static final String COLUMN_LINK_XPATH = ".//td[6]/a";
-  public static final String COLUMN_FECHA_DETALLE_XPATH = "./td[3]";
-  public static final String COLUMN_LINK_DETALLE_XPATH = "./td[7]/a";
-  public static final String DATE_PATTERN_CMAX = "dd-MMM-yyyy H:mm:ss";
-  public static final String DATOS_EXTERNOS_XPATH = "//*[@id='general_formTag_SectionContent']/table[1]/tbody/tr[19]/td[2]/div/span";
-  public static final String NOMBRE_PAQUETE_XPATH = "//*[contains(text(),'Detalles del producto para')]/following-sibling::*[1] | //*[contains(text(),'Detalles del producto para')]";
-  public static final int ZOOM_LEVEL_75 = 75;
-  public static final int ZOOM_LEVEL_80 = 80;
-  public static final int ZOOM_LEVEL_85 = 85;
-  public static final int ZOOM_LEVEL_90 = 90;
-  public static final int NORMAL_ZOOM = 100;
 
 }

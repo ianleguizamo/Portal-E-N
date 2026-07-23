@@ -1,6 +1,5 @@
 package tasks.PortalEmpresas;
 
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static userinterfaces.CmaxPage.*;
 
 import interactions.*;
@@ -9,22 +8,29 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.conditions.Check;
-import net.serenitybdd.screenplay.waits.WaitUntil;
-import org.openqa.selenium.remote.server.handler.SwitchToFrame;
+import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
+import net.thucydides.core.annotations.Step;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
+import utils.CerrarEncuestaQualtrics;
+import utils.EvidenciaUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DescargaTusFacturas implements Task {
 
-
     private static final Logger log = LoggerFactory.getLogger(DescargaTusFacturas.class);
+
     Map<String, String> data = new HashMap<>();
+
+    private static final String paso1 = "Selecciona Consulta tus facturas";
+    private static final String paso2 = "Selecciona Descarga tu factura";
+    private static final String paso3 = "Selecciona Ver factura";
 
     public DescargaTusFacturas(Map<String, String> data) {
         this.data = data;
@@ -36,34 +42,38 @@ public class DescargaTusFacturas implements Task {
     }
 
     @Override
+    @Step("Validar descarga de facturas")
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(CONSULTA_TUS_FACTURAS),
+                SmartClick.on(CONSULTA_TUS_FACTURAS),
                 WaitForResponse.withTarget(DESCARGA_TU_FACTURA)
         );
-
-        CapturasPantallasWeb.capturaPantalla("Consulta tus facturas", "Consulta tus facturas");
-
-        actor.attemptsTo(
-                SmartClick.on(DESCARGA_TU_FACTURA),
-
-                SwitchToSurveyIframe.now(),
-                WaitForResponse.withTarget(BOTON_CERRAR_ENCUESTA),
-                Click.on(BOTON_CERRAR_ENCUESTA),
-                SwitchToDefaultContent.now()
-
-        );
-
-        CapturasPantallasWeb.capturaPantalla("Tarjetas registradas", "Tarjetas registradas");
+        EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
-
-                Click.on(BOTON_VER_FACTURA)
+                SmartClick.on(DESCARGA_TU_FACTURA)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Informacion de la factura", "Informacion de la factura");
+        WaitFor.silencioso(8000);
+        EvidenciaUtils.registrarCaptura(paso2);
 
+        // DEBUG: listar iframes y verificar encuesta
+        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
 
+        List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
+        log.info("Cantidad de iframes encontrados: " + iframes.size());
+        for (WebElement iframe : iframes) {
+            log.info("iframe -> id: " + iframe.getAttribute("id")
+                    + " | name: " + iframe.getAttribute("name")
+                    + " | src: " + iframe.getAttribute("src"));
+        }
+
+        boolean contieneVerFactura = driver.getPageSource().contains("btnBillRegister");
+        boolean contieneEncuesta = driver.getPageSource().contains("Tu opinion");
+        log.info("¿Contiene boton ver factura en DOM principal? " + contieneVerFactura);
+        log.info("¿Contiene texto encuesta en DOM principal? " + contieneEncuesta);
+
+        CerrarEncuestaQualtrics.siAparece(actor);
     }
 }
