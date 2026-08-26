@@ -9,6 +9,9 @@ public class TestData {
     public static void cargarDatos(String rutaArchivo, String hoja, int filaNum) {
         Map<String, String> datos = ExcelReader.leerDatos(rutaArchivo, hoja, filaNum);
         Serenity.setSessionVariable("datosUsuario").to(datos);
+        // Contrato st-context: esta es la fila con la que va a correr el escenario, asi
+        // que es el sitio natural para saber con que usuario y linea se probo.
+        ContextoST.registrarDatos(datos);
     }
 
     // Obtener los datos desde cualquier Step

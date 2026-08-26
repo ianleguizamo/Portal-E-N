@@ -24,6 +24,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import utils.ContextoST;
 import utils.EvidenciaUtils;
 
 public class RealizarIngreso implements Task {
@@ -92,6 +93,11 @@ public class RealizarIngreso implements Task {
 
         WaitFor.silencioso(3000);
         EvidenciaUtils.registrarCaptura(paso);
+
+        if (ingresoOk) {
+            // Contrato st-context: el portal dejo entrar de verdad con esos datos.
+            ContextoST.confirmarLogin();
+        }
 
         if (!ingresoOk) {
             throw new AssertionError(

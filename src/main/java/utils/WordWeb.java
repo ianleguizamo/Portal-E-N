@@ -15,9 +15,12 @@ public class WordWeb {
     private static final String RUTA_BASE = System.getProperty("user.dir") + File.separator + "reportes";
     private static final String TEMPLATE_PATH = System.getProperty("user.dir") + File.separator + "ruta" + File.separator + "EXXO.docx";
     private static final String CAPTURAS_DIR = "Capturas/";
+    // La deja CapturasPantallasWeb.capturarError() en el @After, antes de llamar aqui.
+    private static final String ERROR_DIR = "Error";
+    private static final String ERROR_FILE = "error.png";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-    public static void generarReporte(String nombreEscenario, String[] pasosEjecutados, String nombreFeature, String duracion, String pasoFallido, String estadoFinal) {
+    public static void generarReporte(String nombreEscenario, String[] pasosEjecutados, String nombreFeature, String duracion, String pasoFallido, String estadoFinal, String motivoFallo) {
         File[] capturasFiles = new File(CAPTURAS_DIR).listFiles();
 
         File template = new File(TEMPLATE_PATH);
@@ -42,13 +45,15 @@ public class WordWeb {
             reemplazarTexto(document, "{{FECHA}}", FORMATTER.format(LocalDateTime.now()));
             reemplazarTexto(document, "{{FEATURE}}", nombreFeature != null ? nombreFeature : "No definido");
             reemplazarTexto(document, "{{DURACION}}", duracion);
-            reemplazarTextoConclusion(document, pasosEjecutados, pasoFallido);
+            reemplazarTextoConclusion(document, pasosEjecutados, pasoFallido, motivoFallo);
 
             if (capturasFiles != null && capturasFiles.length > 0) {
                 agregarPasosYCapturas(document, pasosEjecutados, capturasFiles);
             } else {
                 LOGGER.info("No se encontraron capturas para agregar al documento.");
             }
+
+            agregarResultado(document, estadoFinal, pasoFallido, motivoFallo);
 
             document.write(fos);
             LOGGER.info("Reporte generado correctamente en: " + outputPath);
@@ -58,7 +63,7 @@ public class WordWeb {
         }
     }
 
-    private static void reemplazarTextoConclusion(XWPFDocument document, String[] pasos, String pasoFallido) {
+    private static void reemplazarTextoConclusion(XWPFDocument document, String[] pasos, String pasoFallido, String motivoFallo) {
         boolean fallo = pasoFallido != null && !pasoFallido.trim().isEmpty();
 
         for (XWPFTable table : document.getTables()) {
@@ -119,10 +124,88 @@ public class WordWeb {
                             conclusionRun.setText(fallo
                                     ? "Resultado: La prueba finalizo con errores. Se recomienda revisar el paso fallido y ejecutar nuevamente."
                                     : "Resultado: La prueba finalizo satisfactoriamente. Todos los pasos fueron completados sin errores.");
+
+                            // El motivo concreto, en el mismo bloque de conclusion.
+                            if (fallo && motivoFallo != null && !motivoFallo.trim().isEmpty()) {
+                                XWPFRun motivoRun = paragraph.createRun();
+                                motivoRun.setFontFamily("Calibri");
+                                motivoRun.setFontSize(11);
+                                motivoRun.addBreak();
+                                motivoRun.setText("Motivo: " + motivoFallo.trim());
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Cierra el informe con el resultado. Si la prueba fallo documenta en que paso, por que
+     * (mensaje corto, sin la traza de codigo) y la captura de la pantalla en ese momento — que
+     * es lo que antes habia que ir a buscar al reporte de Serenity.
+     */
+    private static void agregarResultado(XWPFDocument doc, String estadoFinal, String pasoFallido, String motivoFallo)
+            throws IOException, InvalidFormatException {
+        boolean fallo = "FAILED".equalsIgnoreCase(estadoFinal);
+
+        XWPFParagraph titulo = doc.createParagraph();
+        titulo.setSpacingBefore(400);
+        XWPFRun tituloRun = titulo.createRun();
+        tituloRun.setFontFamily("Calibri");
+        tituloRun.setBold(true);
+        tituloRun.setFontSize(14);
+        tituloRun.setColor(fallo ? "C00000" : "2E7D32");
+        tituloRun.setText(fallo ? "RESULTADO: FALLIDO" : "RESULTADO: EXITOSO");
+
+        if (!fallo) {
+            return;
+        }
+
+        if (pasoFallido != null && !pasoFallido.trim().isEmpty()) {
+            agregarParrafo(doc, "Paso donde fallo: " + pasoFallido, true);
+        }
+
+        String motivo = (motivoFallo == null || motivoFallo.trim().isEmpty())
+                ? "No se pudo determinar automaticamente (ver el reporte de Serenity)."
+                : motivoFallo;
+        agregarParrafo(doc, "Motivo del fallo: " + motivo, true);
+
+        File captura = new File(ERROR_DIR, ERROR_FILE);
+        if (captura.isFile()) {
+            agregarParrafo(doc, "Pantalla en el momento del fallo:", true);
+            try (FileInputStream is = new FileInputStream(captura)) {
+                XWPFRun imgRun = doc.createParagraph().createRun();
+                // Apaisado: el portal es web, la captura es de pantalla ancha.
+                imgRun.addPicture(is, Document.PICTURE_TYPE_PNG, captura.getName(),
+                        Units.toEMU(450), Units.toEMU(250));
+            }
+        } else {
+            agregarParrafo(doc, "(No se pudo capturar la pantalla del fallo)", false);
+        }
+    }
+
+    private static void agregarParrafo(XWPFDocument doc, String texto, boolean etiquetaEnNegrita) {
+        XWPFParagraph p = doc.createParagraph();
+        p.setSpacingBefore(120);
+        int corte = etiquetaEnNegrita ? texto.indexOf(':') : -1;
+
+        if (corte > 0) {
+            XWPFRun etiqueta = p.createRun();
+            etiqueta.setFontFamily("Calibri");
+            etiqueta.setBold(true);
+            etiqueta.setFontSize(11);
+            etiqueta.setText(texto.substring(0, corte + 1) + " ");
+
+            XWPFRun valor = p.createRun();
+            valor.setFontFamily("Calibri");
+            valor.setFontSize(11);
+            valor.setText(texto.substring(corte + 1).trim());
+        } else {
+            XWPFRun run = p.createRun();
+            run.setFontFamily("Calibri");
+            run.setFontSize(11);
+            run.setText(texto);
         }
     }
 
