@@ -2,6 +2,12 @@
 
 Característica: Portal Empresas Claro - EyN
 
+  @EyN_PORT_Consultar_Consumos
+  Escenario: Consultar consumos desde soluciones móviles
+    Dado que el usuario abre el portal de Claro Empresas
+    Cuando el usuario inicia sesión con sus credenciales
+    Entonces el usuario consulta el detalle de sus consumos
+
   @EyN_PORT_Cambio_SIM
   Escenario: Solicitar cambio de SIM en soluciones móviles
     Dado que el usuario abre el portal de Claro Empresas
@@ -43,12 +49,6 @@ Característica: Portal Empresas Claro - EyN
     Dado que el usuario abre el portal de Claro Empresas
     Cuando el usuario inicia sesión con sus credenciales
     Entonces el usuario visualiza los paquetes de datos disponibles
-
-  @EyN_PORT_Consultar_Consumos
-  Escenario: Consultar consumos desde soluciones móviles
-    Dado que el usuario abre el portal de Claro Empresas
-    Cuando el usuario inicia sesión con sus credenciales
-    Entonces el usuario consulta el detalle de sus consumos
 
   @EyN_PORT_Detalle_Plan
   Escenario: Consultar detalle del plan desde soluciones móviles
