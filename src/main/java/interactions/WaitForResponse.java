@@ -1,119 +1,125 @@
 package interactions;
 
-import io.appium.java_client.MobileBy;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import net.serenitybdd.core.time.InternalSystemClock;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Interaction;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.targets.Target;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * Espera activa hasta que aparezca un elemento (por Target) o alguno de unos textos.
+ *
+ * <p>Notas de mantenimiento:
+ *
+ * <ul>
+ *   <li>La version anterior recorria {@code expectedTexts} incluso cuando se construia con
+ *       un Target, con lo que {@code withTarget(...)} lanzaba NullPointerException en
+ *       cuanto el elemento no estaba presente en el primer intento. Ahora cada modo mira
+ *       solo su propia fuente.
+ *   <li>Tambien buscaba los textos con {@code MobileBy.AndroidUIAutomator}, un localizador
+ *       de Appium que en un navegador nunca puede resolver. Se cambio por XPath.
+ *   <li>El bucle no dormia entre intentos: consumia un nucleo al 100% durante toda la
+ *       espera. Ahora pausa {@link #INTERVALO_MS} entre sondeos.
+ * </ul>
+ */
 public class WaitForResponse implements Interaction {
 
-    private final List<String> expectedTexts;
-    private final int timeout;
-    private static final int DEFAULT_TIMEOUT = 120;
+  /**
+   * 30 s cubre de sobra las respuestas del portal. El valor anterior (120 s) nunca se
+   * llegaba a agotar porque la espera reventaba antes con el NullPointerException; ahora
+   * que espera de verdad, 120 s solo servirian para alargar los escenarios que ya fallan.
+   */
+  private static final int DEFAULT_TIMEOUT = 30;
 
-    // NUEVO
-    private final Target target;
+  private static final int INTERVALO_MS = 250;
 
-    /* ===== CONSTRUCTORES ===== */
+  private final List<String> expectedTexts;
+  private final Target target;
+  private final int timeout;
 
-    // ORIGINAL (NO MODIFICADO)
-    public WaitForResponse(List<String> expectedTexts, int timeout) {
-        this.expectedTexts = expectedTexts;
-        this.timeout = timeout;
-        this.target = null;
+  public WaitForResponse(List<String> expectedTexts, int timeout) {
+    this.expectedTexts = expectedTexts;
+    this.timeout = timeout;
+    this.target = null;
+  }
+
+  public WaitForResponse(Target target, int timeout) {
+    this.target = target;
+    this.timeout = timeout;
+    this.expectedTexts = Collections.emptyList();
+  }
+
+  @Override
+  public <T extends Actor> void performAs(T actor) {
+    long limite = System.currentTimeMillis() + timeout * 1000L;
+
+    do {
+      if (estaPresente(actor)) {
+        return;
+      }
+      new InternalSystemClock().pauseFor(INTERVALO_MS);
+    } while (System.currentTimeMillis() < limite);
+
+    throw new AssertionError("No aparecio " + descripcion() + " en " + timeout + " segundos.");
+  }
+
+  private <T extends Actor> boolean estaPresente(T actor) {
+    try {
+      if (target != null) {
+        return target.resolveFor(actor).isPresent();
+      }
+      return expectedTexts.stream().anyMatch(texto -> contieneTexto(actor, texto));
+    } catch (RuntimeException noDisponibleTodavia) {
+      return false;
     }
+  }
 
-    // NUEVO (Target)
-    public WaitForResponse(Target target, int timeout) {
-        this.target = target;
-        this.timeout = timeout;
-        this.expectedTexts = null;
-    }
+  private <T extends Actor> boolean contieneTexto(T actor, String texto) {
+    By locator = By.xpath("//*[contains(normalize-space(.), \"" + texto + "\")]");
+    return !BrowseTheWeb.as(actor).getDriver().findElements(locator).isEmpty();
+  }
 
-    @Override
-    public <T extends Actor> void performAs(T actor) {
-        WebDriverWait wait = new WebDriverWait(BrowseTheWeb.as(actor).getDriver(), timeout);
-        boolean found = false;
-        long startTime = System.currentTimeMillis();
+  private String descripcion() {
+    return target != null ? target.getName() : "ninguno de los textos " + expectedTexts;
+  }
 
-        while ((System.currentTimeMillis() - startTime) < timeout * 1000 && !found) {
+  /* ===== Espera por elemento ===== */
 
-            // ===== NUEVO: espera por Target (FORMA CORRECTA) =====
-            if (target != null) {
-                try {
-                    if (target.resolveFor(actor).isPresent()) {
-                        found = true;
-                        break;
-                    }
-                } catch (Exception ignored) {
-                }
-            }
+  public static WaitForResponse withTarget(Target target) {
+    return new WaitForResponse(target, DEFAULT_TIMEOUT);
+  }
 
-            // ===== LÓGICA ORIGINAL (NO TOCADA) =====
-            for (String text : expectedTexts) {
-                try {
-                    By locator = MobileBy.AndroidUIAutomator(
-                            String.format("new UiSelector().textContains(\"%s\")", text)
-                    );
-                    List<WebElement> elements =
-                            BrowseTheWeb.as(actor).getDriver().findElements(locator);
+  public static WaitForResponse withTarget(Target target, int timeoutSeconds) {
+    return new WaitForResponse(target, timeoutSeconds);
+  }
 
-                    if (!elements.isEmpty()) {
-                        found = true;
-                        break;
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        }
+  /* ===== Espera por texto ===== */
 
-        if (!found) {
-            throw new RuntimeException(
-                    "Ninguno de los textos esperados fue encontrado en el tiempo dado."
-            );
-        }
-    }
+  public static WaitForResponse withText(String text) {
+    return new WaitForResponse(Collections.singletonList(text), DEFAULT_TIMEOUT);
+  }
 
-    /* ===== FACTORY METHODS ORIGINALES ===== */
+  public static WaitForResponse withText(String text, int timeoutSeconds) {
+    return new WaitForResponse(Collections.singletonList(text), timeoutSeconds);
+  }
 
-    public static WaitForResponse withText(String text, int timeoutSeconds) {
-        return new WaitForResponse(Arrays.asList(text), timeoutSeconds);
-    }
+  public static WaitForResponse withAnyText(String... texts) {
+    return new WaitForResponse(Arrays.asList(texts), DEFAULT_TIMEOUT);
+  }
 
-    public static WaitForResponse withAnyText(List<String> texts, int timeoutSeconds) {
-        return new WaitForResponse(texts, timeoutSeconds);
-    }
+  public static WaitForResponse withAnyText(List<String> texts) {
+    return new WaitForResponse(texts, DEFAULT_TIMEOUT);
+  }
 
-    public static WaitForResponse withAnyText(int timeoutSeconds, String... texts) {
-        return new WaitForResponse(Arrays.asList(texts), timeoutSeconds);
-    }
+  public static WaitForResponse withAnyText(List<String> texts, int timeoutSeconds) {
+    return new WaitForResponse(texts, timeoutSeconds);
+  }
 
-    public static WaitForResponse withText(String text) {
-        return new WaitForResponse(Arrays.asList(text), DEFAULT_TIMEOUT);
-    }
-
-    public static WaitForResponse withAnyText(String... texts) {
-        return new WaitForResponse(Arrays.asList(texts), DEFAULT_TIMEOUT);
-    }
-
-    public static WaitForResponse withAnyText(List<String> texts) {
-        return new WaitForResponse(texts, DEFAULT_TIMEOUT);
-    }
-
-    /* ===== NUEVOS FACTORY METHODS (Target) ===== */
-
-    public static WaitForResponse withTarget(Target target, int timeoutSeconds) {
-        return new WaitForResponse(target, timeoutSeconds);
-    }
-
-    public static WaitForResponse withTarget(Target target) {
-        return new WaitForResponse(target, DEFAULT_TIMEOUT);
-    }
+  public static WaitForResponse withAnyText(int timeoutSeconds, String... texts) {
+    return new WaitForResponse(Arrays.asList(texts), timeoutSeconds);
+  }
 }

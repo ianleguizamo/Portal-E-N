@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class PaquetesDatos implements Task {
 
@@ -43,26 +43,26 @@ public class PaquetesDatos implements Task {
                 WaitForResponse.withTarget(PAQUETES_DE_DATOS)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(PAQUETES_DE_DATOS),
                 WaitForResponse.withTarget(ACCOUNT_ITEM)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir cuenta", "elegir cuenta");
+        EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
                 Click.on(ACCOUNT_ITEM),
                 WaitForResponse.withTarget(LINE_CHECKBOX)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Datos de la cuenta", "Datos de la cuenta");
+        EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 
         actor.attemptsTo(
                 Click.on(LINE_CHECKBOX)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Paquetes de datos", "Paquetes de datos");
+        EvidenciaUtils.registrarCaptura("Paquetes de datos");
     }
 }

@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class SolicitudesDomicilio implements Task {
 
@@ -43,14 +43,14 @@ public class SolicitudesDomicilio implements Task {
                 ScrollToTarget.to(CONSULTAR_SOLICITUDES_DOMICILIO)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(CONSULTAR_SOLICITUDES_DOMICILIO),
                 WaitForResponse.withTarget(HEADER_TIPO_SOLICITUD)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Solicitudes en proceso", "Solicitudes en proceso");
+        EvidenciaUtils.registrarCaptura("Solicitudes en proceso");
 
     }
 }

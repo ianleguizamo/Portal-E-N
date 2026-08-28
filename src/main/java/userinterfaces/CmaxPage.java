@@ -365,4 +365,11 @@ public class CmaxPage {
   public static final Target INSCRIBIR_TARJETA = Target.the("Inscribir tarjeta  ")
           .located(By.xpath("//*[@id=\"BTN_INSCRIBIR_MD\"]/img"));
 
+  // Linea "Facturas por pagar: N" que la grilla de pago pinta encima de la tabla, tanto
+  // en soluciones moviles como en fijas. Se lee el span completo y no solo el numero
+  // porque el marcado interno (clases del <span> anidado) cambia entre las dos paginas.
+  public static final Target TEXTO_FACTURAS_POR_PAGAR =
+          Target.the("texto Facturas por pagar")
+                  .located(By.xpath("//span[starts-with(normalize-space(.),'Facturas por pagar')]"));
+
 }

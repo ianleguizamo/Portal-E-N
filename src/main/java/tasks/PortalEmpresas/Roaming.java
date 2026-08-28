@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class Roaming implements Task {
 
@@ -43,14 +43,14 @@ public class Roaming implements Task {
                 WaitForResponse.withTarget(ROAMING_INTERNACIONAL)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(ROAMING_INTERNACIONAL),
                 WaitForResponse.withTarget(CUENTA_CARD_CONTENEDOR)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir cuenta", "elegir cuenta");
+        EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
                 Click.on(CUENTA_CARD_CONTENEDOR),
@@ -59,12 +59,12 @@ public class Roaming implements Task {
 
         );
 
-        CapturasPantallasWeb.capturaPantalla("Datos de la cuenta", "Datos de la cuenta");
+        EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 
         actor.attemptsTo(
                 WaitForResponse.withTarget(TEXTO_DESCRIPCION_ROAMING)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Cambio de departamento", "Cambio de departamento");
+        EvidenciaUtils.registrarCaptura("Cambio de departamento");
     }
 }

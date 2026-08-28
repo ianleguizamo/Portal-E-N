@@ -25,7 +25,7 @@ public class JavaScriptSmartClick implements Task {
     }
 
     @Override
-    @Step("Clic en #descripcion")
+    @Step("Clic (JS) en #descripcion")
     public <T extends Actor> void performAs(T actor) {
         WebElement elemento = target.resolveFor(actor);
         JavascriptExecutor js = (JavascriptExecutor) BrowseTheWeb.as(actor).getDriver();

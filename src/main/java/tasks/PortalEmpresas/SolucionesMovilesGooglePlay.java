@@ -1,9 +1,17 @@
 package tasks.PortalEmpresas;
 
-import static userinterfaces.CmaxPage.*;
+import static userinterfaces.CmaxPage.BOTON_CONTINUAR;
+import static userinterfaces.CmaxPage.BOTON_PAGAR;
+import static userinterfaces.CmaxPage.CHECKBOX_FILA;
+import static userinterfaces.CmaxPage.METODO_GOOOGLE_PLAY;
 
-import interactions.*;
-
+import interactions.CambiarANuevaPestana;
+import interactions.CerrarPestañaYVolver;
+import interactions.JavaScriptSmartClick;
+import interactions.SmartClick;
+import interactions.WaitFor;
+import interactions.WaitForResponse;
+import java.util.Map;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
@@ -11,112 +19,59 @@ import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.conditions.Check;
 import net.thucydides.core.annotations.Step;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import questions.EstadoDeFacturas;
+import tasks.PortalEmpresas.navegacion.IrAPagoDeSoluciones;
+import tasks.PortalEmpresas.pagos.RegistrarSinFacturas;
+import tasks.PortalEmpresas.pagos.ValidarVentanaDePago;
 import utils.EvidenciaUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/** Pago de soluciones moviles con Google Play. Ver nota de navegacion en SolucionesMovilesPSE. */
 public class SolucionesMovilesGooglePlay implements Task {
 
-    private static final Logger log =
-            LoggerFactory.getLogger(SolucionesMovilesGooglePlay.class);
+  private static final String SECCION = "soluciones moviles";
+  private static final String PASO_METODO = "Selecciona metodo de pago Google Play";
+  private static final String PASO_CONFIRMACION = "Validacion ventana confirmacion Google Play";
 
-    Map<String, String> data = new HashMap<>();
+  private final Map<String, String> data;
 
-    public SolucionesMovilesGooglePlay(Map<String, String> data) {
-        this.data = data;
+  public SolucionesMovilesGooglePlay(Map<String, String> data) {
+    this.data = data;
+  }
+
+  public static Performable solucionesMovilesGooglePlay(Map<String, String> data) {
+    return Instrumented.instanceOf(SolucionesMovilesGooglePlay.class).withProperties(data);
+  }
+
+  @Override
+  @Step("Validar pago de soluciones moviles con Google Play")
+  public <T extends Actor> void performAs(T actor) {
+
+    String ventanaPrincipal = BrowseTheWeb.as(actor).getDriver().getWindowHandle();
+
+    actor.attemptsTo(IrAPagoDeSoluciones.moviles());
+
+    if (actor.asksFor(EstadoDeFacturas.enLaPagina()).sinFacturasPendientes(SECCION)) {
+      actor.attemptsTo(RegistrarSinFacturas.en(SECCION));
+      return;
     }
 
-    private static final String paso1 = "Selecciona Pagos en linea";
-    private static final String paso2 = "Selecciona Pago de soluciones moviles";
-    private static final String paso3 = "Selecciona metodo de pago Google Play";
-    private static final String paso4 = "Validacion ventana confirmacion pago Google Play";
-
-    public static Performable solucionesMovilesGooglePlay(Map<String, String> data) {
-        return Instrumented.instanceOf(SolucionesMovilesGooglePlay.class)
-                .withProperties(data);
-    }
-
-    @Override
-    @Step("Validar pago de soluciones moviles con Google Play")
-    public <T extends Actor> void performAs(T actor) {
-
-        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
-        String ventanaPrincipal = driver.getWindowHandle();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-
-        actor.attemptsTo(
+    actor.attemptsTo(
+        Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
+            .andIfSo(
+                SmartClick.on(CHECKBOX_FILA),
                 WaitFor.aTime(2000),
-                SmartClick.on(PAGOS_EN_LINEA),
-                WaitFor.aTime(2000)
-        );
-        EvidenciaUtils.registrarCaptura(paso1);
+                WaitForResponse.withTarget(BOTON_PAGAR),
+                SmartClick.on(BOTON_PAGAR))
+            .otherwise(WaitFor.aTime(1000)));
 
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                SmartClick.on(PAGO_SOLUCIONES_MOVILES),
-                WaitFor.aTime(2000)
-        );
-        EvidenciaUtils.registrarCaptura(paso2);
+    actor.attemptsTo(WaitFor.aTime(2000), SmartClick.on(METODO_GOOOGLE_PLAY), WaitFor.aTime(2000));
 
-        actor.attemptsTo(
-                Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
-                        .andIfSo(
-                                SmartClick.on(CHECKBOX_FILA),
-                                WaitFor.aTime(2000),
-                                WaitForResponse.withTarget(BOTON_PAGAR),
-                                SmartClick.on(BOTON_PAGAR)
-                        )
-                        .otherwise(
-                                WaitFor.aTime(1000)
-                        )
-        );
+    EvidenciaUtils.registrarCaptura(PASO_METODO);
 
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                SmartClick.on(METODO_GOOOGLE_PLAY),
-                WaitFor.aTime(2000)
-        );
-        EvidenciaUtils.registrarCaptura(paso3);
-
-        actor.attemptsTo(
-                JavaScriptSmartClick.on(BOTON_CONTINUAR)
-        );
-
-        // Esperar nueva pestaña
-        wait.until(d -> d.getWindowHandles().size() > 1);
-
-        // Cambiar a nueva pestaña
-        for (String ventana : driver.getWindowHandles()) {
-            if (!ventana.equals(ventanaPrincipal)) {
-                driver.switchTo().window(ventana);
-                break;
-            }
-        }
-
-        WaitFor.silencioso(3000);
-
-        String contenidoPagina = driver.getPageSource();
-        boolean paginaPresente = contenidoPagina.contains("Número de Factura")
-                || contenidoPagina.contains("Numero de Factura")
-                || contenidoPagina.contains("Google Play");
-
-        if (paginaPresente) {
-            log.info("Ventana de confirmacion Google Play validada correctamente");
-            EvidenciaUtils.registrarCaptura(paso4);
-        } else {
-            log.warn("No se encontro contenido esperado en la ventana de confirmacion Google Play");
-            EvidenciaUtils.registrarCaptura(paso4 + " - CONTENIDO NO ENCONTRADO");
-        }
-
-        actor.attemptsTo(
-                CerrarPestañaYVolver.ahora(ventanaPrincipal)
-        );
-    }
+    actor.attemptsTo(
+        JavaScriptSmartClick.on(BOTON_CONTINUAR),
+        CambiarANuevaPestana.desde(ventanaPrincipal),
+        ValidarVentanaDePago.con(PASO_CONFIRMACION, "Google Play"),
+        CerrarPestañaYVolver.ahora(ventanaPrincipal));
+  }
 }

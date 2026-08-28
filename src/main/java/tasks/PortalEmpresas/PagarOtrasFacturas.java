@@ -12,10 +12,10 @@ import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class PagarOtrasFacturas implements Task {
 
@@ -36,17 +36,11 @@ public class PagarOtrasFacturas implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                SmartClick.on(PAGOS_EN_LINEA)
-        );
-
-        CapturasPantallasWeb.capturaPantalla("Pagos en linea", "Pagos en linea");
-
-        actor.attemptsTo(
                 SmartClick.on(PAGAR_OTRAS_CUENTAS),
                 WaitFor.aTime(600)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Otras cuentas", "Otras cuentas");
+        EvidenciaUtils.registrarCaptura("Otras cuentas");
 
 
     }

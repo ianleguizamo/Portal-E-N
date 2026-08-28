@@ -22,7 +22,6 @@ public class PagosAutoFacturasSolucionesMoviles implements Task {
 
     Map<String, String> data = new HashMap<>();
 
-    private static final String paso1 = "Valida seccion pagos en linea";
     private static final String paso2 = "Valida seccion Pagos automaticos";
     private static final String paso3 = "Ingreso exitoso a Pagos automaticos";
     private static final String paso4 = "Selecciona Soluciones Moviles en Pagos automaticos";
@@ -39,13 +38,6 @@ public class PagosAutoFacturasSolucionesMoviles implements Task {
     @Override
     @Step("Validar pago automatico de facturas")
     public <T extends Actor> void performAs(T actor) {
-
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                SmartClick.on(PAGOS_EN_LINEA),
-                WaitFor.aTime(2000)
-        );
-        EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
                 SmartClick.on(PAGO_AUTOMATICO_FACTURAS)

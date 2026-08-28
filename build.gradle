@@ -1,12 +1,10 @@
 repositories {
     mavenCentral()
-    jcenter()
     mavenLocal()
 }
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -42,7 +40,6 @@ test {
 tasks.withType(Test) {
     systemProperty "file.encoding", "UTF-8"
     systemProperties = System.properties
-    maxParallelForks = Runtime.runtime.availableProcessors()
 }
 
 ext {

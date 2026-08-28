@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class ConsultarConsumos implements Task {
 
@@ -44,14 +44,14 @@ public class ConsultarConsumos implements Task {
                 WaitForResponse.withTarget(CONSULTAR_CONSUMOS)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(CONSULTAR_CONSUMOS),
                 WaitForResponse.withTarget(CUENTA_MAESTRA)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir cuenta", "elegir cuenta");
+        EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
                 Click.on(CUENTA_MAESTRA),
@@ -63,13 +63,13 @@ public class ConsultarConsumos implements Task {
                 WaitForResponse.withTarget(CUENTA_MAESTRA_CONSUMOS)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Consumos de minutos", "Consumos de minutos");
+        EvidenciaUtils.registrarCaptura("Consumos de minutos");
 
         actor.attemptsTo(
                 Click.on(CONSUMO_DATOS),
                 WaitForResponse.withTarget(CUENTA_MAESTRA_CONSUMOS)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Consumo de datos", "Consumo de datos");
+        EvidenciaUtils.registrarCaptura("Consumo de datos");
     }
 }

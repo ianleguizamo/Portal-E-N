@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class DetalleCuentaMaestra implements Task {
 
@@ -43,21 +43,21 @@ public class DetalleCuentaMaestra implements Task {
                 ScrollToTarget.to(DETALLE_CUENTAS_MAESTRAS)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(DETALLE_CUENTAS_MAESTRAS),
                 WaitForResponse.withTarget(CUENTA_MAESTRA)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir cuenta", "elegir cuenta");
+        EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
                 Click.on(CUENTA_MAESTRA),
                 Click.on(BTN_CONTINUAR)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Elegir numero", "Elegir numero");
+        EvidenciaUtils.registrarCaptura("Elegir numero");
 
     }
 }

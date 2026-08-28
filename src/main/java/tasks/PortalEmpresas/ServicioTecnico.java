@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class ServicioTecnico implements Task {
 
@@ -43,21 +43,21 @@ public class ServicioTecnico implements Task {
                 WaitForResponse.withTarget(SERVICIO_TECNICO_DOMICILIO)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(SERVICIO_TECNICO_DOMICILIO),
                 WaitForResponse.withTarget(CUENTA_CARD_CONTENEDOR)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir cuenta", "elegir cuenta");
+        EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
                 Click.on(CUENTA_CARD_CONTENEDOR),
                 WaitForResponse.withTarget(TARJETA_LINEA_SELECCIONABLE)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Datos de la cuenta", "Datos de la cuenta");
+        EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 
         actor.attemptsTo(
                 Click.on(TARJETA_LINEA_SELECCIONABLE),
@@ -66,6 +66,6 @@ public class ServicioTecnico implements Task {
 
         );
 
-        CapturasPantallasWeb.capturaPantalla("estado de garantia", "estado de garantia");
+        EvidenciaUtils.registrarCaptura("estado de garantia");
     }
 }

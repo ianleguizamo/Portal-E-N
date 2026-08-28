@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class ResumenGraficos implements Task {
 
@@ -43,7 +43,7 @@ public class ResumenGraficos implements Task {
                 WaitForResponse.withTarget(RESUMEN_GRAFICO_FACTURAS)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Consulta tus facturas", "Consulta tus facturas");
+        EvidenciaUtils.registrarCaptura("Consulta tus facturas");
 
         actor.attemptsTo(
                 SmartClick.on(RESUMEN_GRAFICO_FACTURAS),
@@ -55,7 +55,7 @@ public class ResumenGraficos implements Task {
 
         );
 
-        CapturasPantallasWeb.capturaPantalla("graficos", "graficos");
+        EvidenciaUtils.registrarCaptura("graficos");
 
 
     }

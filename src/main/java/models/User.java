@@ -1,81 +1,51 @@
 package models;
 
+/**
+ * Un usuario de pruebas de real-user.json.
+ *
+ * <p>Solo tiene los campos que la suite usa de verdad. La version anterior arrastraba
+ * dieciseis campos copiados de otro proyecto (paquetes, recargas, IMEI...) que ninguna
+ * clase leia y que ni siquiera coincidian con las claves del JSON.
+ */
 public class User {
 
-  private String opcion;
-  private String password;
-  private String nombreUsuario;
-  private String segmentacion;
+  /** Nombre con el que se elige este usuario; ver TestData.cargarDatos. */
+  private String alias;
+
+  /** Correo con el que se inicia sesion en el portal. */
+  private String usuario;
+
+  private String contrasena;
+
+  /** Linea asociada. Puede ir vacia: solo se usa para el contexto de Smart Tester. */
   private String numero;
-  private String documento;
-  private String email2;
-  private String password2;
-  private String email;
 
-  private String tipoPaquete;
-  private String paqueteComprar;
-  private String nombrePaquete;
-
-  private String paquete;
-  private String datos;
-  private String minutos;
-  private String precio;
-
-  public String getNombrePaquete() {
-    return nombrePaquete;
+  public User() {
+    // Requerido por Jackson
   }
 
-  public void setNombrePaquete(String nombrePaquete) {
-    this.nombrePaquete = nombrePaquete;
+  public String getAlias() {
+    return alias;
   }
 
-
-  public String getPaquete() {
-    return paquete;
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
-  public void setPaquete(String paquete) {
-    this.paquete = paquete;
+  public String getUsuario() {
+    return usuario;
   }
 
-  public String getEmail() {
-    return email;
+  public void setUsuario(String usuario) {
+    this.usuario = usuario;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public String getContrasena() {
+    return contrasena;
   }
 
-  public String getDocumento() {
-    return documento;
-  }
-
-  public void setDocumento(String documento) {
-    this.documento = documento;
-  }
-
-  public String getNombreUsuario() {
-    return nombreUsuario;
-  }
-
-  public void setNombreUsuario(String nombreUsuario) {
-    this.nombreUsuario = nombreUsuario;
-  }
-
-  public String getOpcion() {
-    return opcion;
-  }
-
-  public void setOpcion(String opcion) {
-    this.opcion = opcion;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
+  public void setContrasena(String contrasena) {
+    this.contrasena = contrasena;
   }
 
   public String getNumero() {
@@ -84,69 +54,5 @@ public class User {
 
   public void setNumero(String numero) {
     this.numero = numero;
-  }
-
-  public void setSegmentacion(String segmentacion) {
-    this.segmentacion = segmentacion;
-  }
-
-  public String getSegmentacion() {
-    return segmentacion;
-  }
-
-  public String getEmail2() {
-    return email2;
-  }
-
-  public void setEmail2(String email2) {
-    this.email2 = email2;
-  }
-
-  public String getPassword2() {
-    return password2;
-  }
-
-  public void setPassword2(String password2) {
-    this.password2 = password2;
-  }
-
-  public String getTipoPaquete() {
-    return tipoPaquete;
-  }
-
-  public void setTipoPaquete(String tipoPaquete) {
-    this.tipoPaquete = tipoPaquete;
-  }
-
-  public String getPaqueteComprar() {
-    return paqueteComprar;
-  }
-
-  public void setPaqueteComprar(String paqueteComprar) {
-    this.paqueteComprar = paqueteComprar;
-  }
-
-  public String getDatos() {
-    return datos;
-  }
-
-  public void setDatos(String datos) {
-    this.datos = datos;
-  }
-
-  public String getMinutos() {
-    return minutos;
-  }
-
-  public void setMinutos(String minutos) {
-    this.minutos = minutos;
-  }
-
-  public String getPrecio() {
-    return precio;
-  }
-
-  public void setPrecio(String precio) {
-    this.precio = precio;
   }
 }

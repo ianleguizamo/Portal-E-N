@@ -1,131 +1,82 @@
 package tasks.PortalEmpresas;
 
-import static userinterfaces.CmaxPage.*;
+import static userinterfaces.CmaxPage.BOTON_BANCOLOMBIA;
+import static userinterfaces.CmaxPage.BOTON_CONTINUAR;
+import static userinterfaces.CmaxPage.BOTON_PAGAR;
+import static userinterfaces.CmaxPage.CHECKBOX_FILA;
 
-import interactions.*;
-
+import interactions.CambiarANuevaPestana;
+import interactions.CerrarPestañaYVolver;
+import interactions.SmartClick;
+import interactions.WaitFor;
+import interactions.WaitForResponse;
+import java.util.Map;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
+import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.conditions.Check;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.thucydides.core.annotations.Step;
+import questions.EstadoDeFacturas;
+import tasks.PortalEmpresas.navegacion.IrAPagoDeSoluciones;
+import tasks.PortalEmpresas.pagos.RegistrarSinFacturas;
+import tasks.PortalEmpresas.pagos.ValidarVentanaDePago;
 import utils.EvidenciaUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/** Pago de soluciones moviles por Bancolombia. Ver nota de navegacion en SolucionesMovilesPSE. */
 public class SolucionesMovilesBancolombia implements Task {
 
-    private static final Logger log =
-            LoggerFactory.getLogger(SolucionesMovilesBancolombia.class);
+  private static final String PASO_PAGAR = "Selecciona Boton Pagar";
+  private static final String SECCION = "soluciones moviles";
+  private static final String PASO_METODO = "Selecciona metodo de pago Bancolombia";
+  private static final String PASO_CONFIRMACION = "Validacion ventana confirmacion pago";
 
-    Map<String, String> data = new HashMap<>();
+  private final Map<String, String> data;
 
-    public SolucionesMovilesBancolombia(Map<String, String> data) {
-        this.data = data;
+  public SolucionesMovilesBancolombia(Map<String, String> data) {
+    this.data = data;
+  }
+
+  public static Performable solucionesMovilesBancolombia(Map<String, String> data) {
+    return Instrumented.instanceOf(SolucionesMovilesBancolombia.class).withProperties(data);
+  }
+
+  @Override
+  @Step("Validar pago de soluciones moviles por Bancolombia")
+  public <T extends Actor> void performAs(T actor) {
+
+    String ventanaPrincipal = BrowseTheWeb.as(actor).getDriver().getWindowHandle();
+
+    actor.attemptsTo(IrAPagoDeSoluciones.moviles());
+
+    if (actor.asksFor(EstadoDeFacturas.enLaPagina()).sinFacturasPendientes(SECCION)) {
+      actor.attemptsTo(RegistrarSinFacturas.en(SECCION));
+      return;
     }
 
-    private static final String paso1 = "Selecciona Pagos en linea PSE";
-    private static final String paso2 = "Selecciona Pago de soluciones moviles";
-    private static final String paso3 = "Selecciona Boton Pagar";
-    private static final String paso4 = "Selecciona metodo de pago Bancolombia";
-    private static final String paso5 = "Validacion ventana confirmacion pago";
+    actor.attemptsTo(
+        Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
+            .andIfSo(
+                Click.on(CHECKBOX_FILA),
+                WaitForResponse.withTarget(BOTON_PAGAR),
+                Click.on(BOTON_PAGAR))
+            .otherwise(WaitFor.aTime(1000)));
 
-    public static Performable solucionesMovilesBancolombia(
-            Map<String, String> data
-    ) {
-        return Instrumented.instanceOf(SolucionesMovilesBancolombia.class)
-                .withProperties(data);
-    }
+    EvidenciaUtils.registrarCaptura(PASO_PAGAR);
 
-    @Override
-    public <T extends Actor> void performAs(T actor) {
+    actor.attemptsTo(
+        Check.whether(BOTON_BANCOLOMBIA.resolveFor(actor).isPresent())
+            .andIfSo(WaitForResponse.withTarget(BOTON_BANCOLOMBIA), Click.on(BOTON_BANCOLOMBIA))
+            .otherwise(WaitFor.aTime(1000)));
 
-        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
+    EvidenciaUtils.registrarCaptura(PASO_METODO);
 
-        String ventanaPrincipal = driver.getWindowHandle();
-
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                Click.on(PAGOS_EN_LINEA),
-                WaitFor.aTime(2000)
-        );
-        EvidenciaUtils.registrarCaptura(paso1);
-
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                Click.on(PAGO_SOLUCIONES_MOVILES),
-                WaitFor.aTime(2000)
-        );
-        EvidenciaUtils.registrarCaptura(paso2);
-
-        actor.attemptsTo(
-                Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
-                        .andIfSo(
-                                Click.on(CHECKBOX_FILA),
-                                WaitForResponse.withTarget(BOTON_PAGAR),
-                                Click.on(BOTON_PAGAR)
-                        )
-                        .otherwise(
-                                WaitFor.aTime(1000)
-                        )
-        );
-        EvidenciaUtils.registrarCaptura(paso3);
-
-        actor.attemptsTo(
-                Check.whether(BOTON_BANCOLOMBIA.resolveFor(actor).isPresent())
-                        .andIfSo(
-                                WaitForResponse.withTarget(BOTON_BANCOLOMBIA),
-                                Click.on(BOTON_BANCOLOMBIA)
-                        )
-                        .otherwise(
-                                WaitFor.aTime(1000)
-                        )
-        );
-        EvidenciaUtils.registrarCaptura(paso4);
-
-        actor.attemptsTo(
-                SmartClick.on(BOTON_CONTINUAR)
-        );
-
-        wait.until(d -> d.getWindowHandles().size() > 1);
-
-        // Cambiar a la nueva pestaña
-        for (String ventana : driver.getWindowHandles()) {
-            if (!ventana.equals(ventanaPrincipal)) {
-                driver.switchTo().window(ventana);
-                break;
-            }
-        }
-
-        actor.attemptsTo(
-                WaitFor.aTime(3000)
-        );
-
-        String contenidoPagina = driver.getPageSource();
-        boolean facturaPresente = contenidoPagina.contains("Número de Factura")
-                || contenidoPagina.contains("Numero de Factura");
-
-        if (facturaPresente) {
-            log.info(" Ventana de confirmación validada: 'Número de Factura' presente");
-            EvidenciaUtils.registrarCaptura(paso5);
-        } else {
-            log.warn("⚠️ No se encontró 'Número de Factura' en la ventana de confirmación");
-            EvidenciaUtils.registrarCaptura(paso5 + " - TEXTO NO ENCONTRADO");
-        }
-
-        actor.attemptsTo(
-                CerrarPestañaYVolver.ahora(ventanaPrincipal)
-        );
-    }
+    actor.attemptsTo(
+        SmartClick.on(BOTON_CONTINUAR),
+        CambiarANuevaPestana.desde(ventanaPrincipal),
+        ValidarVentanaDePago.con(PASO_CONFIRMACION),
+        CerrarPestañaYVolver.ahora(ventanaPrincipal));
+  }
 }

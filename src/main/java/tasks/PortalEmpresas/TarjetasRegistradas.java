@@ -21,7 +21,6 @@ public class TarjetasRegistradas implements Task {
 
     Map<String, String> data = new HashMap<>();
 
-    private static final String paso1 = "Selecciona Pagos en linea";
     private static final String paso2 = "Selecciona Tarjetas registradas";
     private static final String paso3 = "Clic en boton registrar nueva tarjeta";
 
@@ -37,11 +36,6 @@ public class TarjetasRegistradas implements Task {
     @Override
     @Step("Validar tarjetas registradas")
     public <T extends Actor> void performAs(T actor) {
-
-        actor.attemptsTo(
-                SmartClick.on(PAGOS_EN_LINEA)
-        );
-        EvidenciaUtils.registrarCaptura(paso1);
 
         actor.attemptsTo(
                 SmartClick.on(TARJETAS_REGISTRADAS)

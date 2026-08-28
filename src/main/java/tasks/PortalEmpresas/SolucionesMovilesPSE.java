@@ -1,126 +1,77 @@
 package tasks.PortalEmpresas;
 
-import static userinterfaces.CmaxPage.*;
+import static userinterfaces.CmaxPage.BOTON_CONTINUAR;
+import static userinterfaces.CmaxPage.BOTON_PAGAR;
+import static userinterfaces.CmaxPage.CHECKBOX_CUSTOM;
+import static userinterfaces.CmaxPage.METODO_PSE;
 
-import interactions.*;
-
+import interactions.CambiarANuevaPestana;
+import interactions.CerrarPestañaYVolver;
+import interactions.SmartClick;
+import interactions.WaitFor;
+import interactions.WaitForResponse;
+import java.util.Map;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.serenitybdd.screenplay.actions.Click;
+import net.thucydides.core.annotations.Step;
+import questions.EstadoDeFacturas;
+import tasks.PortalEmpresas.navegacion.IrAPagoDeSoluciones;
+import tasks.PortalEmpresas.pagos.RegistrarSinFacturas;
 import utils.EvidenciaUtils;
 
-
-import javax.lang.model.element.ElementVisitor;
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * Pago de soluciones moviles por PSE.
+ *
+ * <p>Arranca ya dentro de "Pagos en linea": ese paso lo aporta el Antecedentes del feature
+ * (ver IrAPagosEnLinea), no esta Task.
+ */
 public class SolucionesMovilesPSE implements Task {
 
-    private static final Logger log =
-            LoggerFactory.getLogger(SolucionesMovilesPSE.class);
+  private static final String SECCION = "soluciones moviles";
+  private static final String PASO_METODO = "Selecciona metodo de pago PSE";
 
-    Map<String, String> data = new HashMap<>();
+  private final Map<String, String> data;
 
-    public SolucionesMovilesPSE(Map<String, String> data) {
-        this.data = data;
+  public SolucionesMovilesPSE(Map<String, String> data) {
+    this.data = data;
+  }
+
+  public static Performable solucionesMovilesPSE(Map<String, String> data) {
+    return Instrumented.instanceOf(SolucionesMovilesPSE.class).withProperties(data);
+  }
+
+  @Override
+  @Step("Validar pago de soluciones moviles por PSE")
+  public <T extends Actor> void performAs(T actor) {
+
+    String ventanaPrincipal = BrowseTheWeb.as(actor).getDriver().getWindowHandle();
+
+    actor.attemptsTo(IrAPagoDeSoluciones.moviles());
+
+    if (actor.asksFor(EstadoDeFacturas.enLaPagina()).sinFacturasPendientes(SECCION)) {
+      actor.attemptsTo(RegistrarSinFacturas.en(SECCION));
+      return;
     }
-    private static final String paso1 = "Selecciona Pagos en linea PSE";
-    private static final String paso2 = "Selecciona Pago de soluciones móviles";
-    private static final String paso3 = "Selecciona metodo de pago PSE";
 
-    public static Performable solucionesMovilesPSE(
-            Map<String, String> data
-    ) {
+    actor.attemptsTo(
+        Click.on(CHECKBOX_CUSTOM),
+        WaitFor.aTime(2000),
+        WaitForResponse.withTarget(BOTON_PAGAR),
+        Click.on(BOTON_PAGAR),
+        WaitFor.aTime(2000),
+        WaitForResponse.withTarget(METODO_PSE),
+        Click.on(METODO_PSE),
+        WaitFor.aTime(2000));
 
-        return Instrumented.instanceOf(SolucionesMovilesPSE.class)
-                .withProperties(data);
-    }
+    EvidenciaUtils.registrarCaptura(PASO_METODO);
 
-    @Override
-    public <T extends Actor> void performAs(T actor) {
-
-        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
-
-        // VEentana principal
-
-        String ventanaPrincipal = driver.getWindowHandle();
-
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                Click.on(PAGOS_EN_LINEA),
-                WaitFor.aTime(2000)
-        );
-
-        EvidenciaUtils.registrarCaptura(paso1);
-
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                Click.on(PAGO_SOLUCIONES_MOVILES),
-                WaitFor.aTime(2000)
-        );
-
-        EvidenciaUtils.registrarCaptura(paso2);
-
-        actor.attemptsTo(
-                Click.on(CHECKBOX_CUSTOM),
-
-                WaitFor.aTime(2000),
-
-                WaitForResponse.withTarget(BOTON_PAGAR),
-
-                Click.on(BOTON_PAGAR)
-
-        );
-
-
-        actor.attemptsTo(
-                WaitFor.aTime(2000),
-                WaitForResponse.withTarget(METODO_PSE),
-                Click.on(METODO_PSE),
-                WaitFor.aTime(2000)
-        );
-
-        EvidenciaUtils.registrarCaptura(paso3);
-
-        actor.attemptsTo(
-                SmartClick.on(BOTON_CONTINUAR)
-        );
-
-        // Esperar nueva pestaña
-
-        wait.until(d -> d.getWindowHandles().size() > 1);
-
-        // Cambiar a  nueva pestaña
-
-        for (String ventana : driver.getWindowHandles()) {
-
-            if (!ventana.equals(ventanaPrincipal)) {
-
-                driver.switchTo().window(ventana);
-
-                break;
-            }
-        }
-
-        actor.attemptsTo(
-                WaitFor.aTime(2000)
-        );
-
-
-
-        actor.attemptsTo(
-                CerrarPestañaYVolver.ahora(ventanaPrincipal)
-        );
-    }
+    actor.attemptsTo(
+        SmartClick.on(BOTON_CONTINUAR),
+        CambiarANuevaPestana.desde(ventanaPrincipal),
+        CerrarPestañaYVolver.ahora(ventanaPrincipal));
+  }
 }

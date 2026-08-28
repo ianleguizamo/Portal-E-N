@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class CambioDeNumero implements Task {
 
@@ -43,26 +43,26 @@ public class CambioDeNumero implements Task {
                 WaitForResponse.withTarget(CAMBIO_DE_NUMERO)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(CAMBIO_DE_NUMERO)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir cuenta", "elegir cuenta");
+        EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
                 Click.on(ACCOUNT_ITEM),
                 Click.on(CHECKBOX_CUSTOM_RADIO)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir numero", "elegir numero");
+        EvidenciaUtils.registrarCaptura("elegir numero");
 
         actor.attemptsTo(
                 Click.on(BTN_CONTINUAR),
                 WaitForResponse.withTarget(INFO_CAMBIO_NUMERO)
         );
 
-        CapturasPantallasWeb.capturaPantalla(".", ".");
+        EvidenciaUtils.registrarCaptura("Informacion del cambio de numero");
     }
 }

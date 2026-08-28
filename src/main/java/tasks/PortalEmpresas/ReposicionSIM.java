@@ -15,10 +15,10 @@ import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.CapturasPantallasWeb;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.EvidenciaUtils;
 
 public class ReposicionSIM implements Task {
 
@@ -43,21 +43,21 @@ public class ReposicionSIM implements Task {
                 WaitForResponse.withTarget(OPCION_REPOSICION_SIM_CARD)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Soluciones moviles", "Soluciones moviles");
+        EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
                 Click.on(OPCION_REPOSICION_SIM_CARD),
                 WaitForResponse.withTarget(CUENTA_CARD_CONTENEDOR)
         );
 
-        CapturasPantallasWeb.capturaPantalla("elegir cuenta", "elegir cuenta");
+        EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
                 Click.on(CUENTA_CARD_CONTENEDOR),
                 WaitForResponse.withTarget(TARJETA_LINEA_SELECCIONABLE)
         );
 
-        CapturasPantallasWeb.capturaPantalla("Datos de la cuenta", "Datos de la cuenta");
+        EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 
         actor.attemptsTo(
                 Click.on(TARJETA_LINEA_SELECCIONABLE),
@@ -66,6 +66,6 @@ public class ReposicionSIM implements Task {
 
         );
 
-        CapturasPantallasWeb.capturaPantalla("reposicion sim", "reposicion sim");
+        EvidenciaUtils.registrarCaptura("reposicion sim");
     }
 }

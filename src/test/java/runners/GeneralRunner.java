@@ -12,7 +12,7 @@ import java.io.IOException;
         features = "src/test/resources/features",
         glue = {"stepDefinitions", "utils", "hooks"},
         snippets = SnippetType.CAMELCASE,
-            tags = "@EyN_PORT_Inicio_Sesion"
+            tags = "@EyN_PORT_Pagos_PSE"
 )
 
 @RunWith(CustomRunner.class)
