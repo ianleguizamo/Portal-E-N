@@ -1,5 +1,6 @@
 package tasks.PortalEmpresas;
 
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 import static userinterfaces.CmaxPage.BOTON_CONTINUAR;
 import static userinterfaces.CmaxPage.BOTON_PAGAR;
 import static userinterfaces.CmaxPage.CHECKBOX_FILA;
@@ -10,7 +11,6 @@ import interactions.CerrarPestañaYVolver;
 import interactions.JavaScriptSmartClick;
 import interactions.SmartClick;
 import interactions.WaitFor;
-import interactions.WaitForResponse;
 import java.util.Map;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
@@ -18,6 +18,7 @@ import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.conditions.Check;
+import net.serenitybdd.screenplay.waits.WaitUntil;
 import net.thucydides.core.annotations.Step;
 import questions.EstadoDeFacturas;
 import tasks.PortalEmpresas.navegacion.IrAPagoDeSoluciones;
@@ -27,6 +28,9 @@ import utils.EvidenciaUtils;
 
 /** Pago de soluciones fijas con tarjeta. Ver nota de navegacion en SolucionesMovilesPSE. */
 public class SolucionesFijasTarjetas implements Task {
+
+  /** Tope para cada espera por elemento; el portal responde muy por debajo. */
+  private static final int ESPERA_SEGUNDOS = 30;
 
   private static final String SECCION = "soluciones fijas";
   private static final String PASO_METODO = "Selecciona metodo de pago Tarjeta";
@@ -60,13 +64,12 @@ public class SolucionesFijasTarjetas implements Task {
         Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
             .andIfSo(
                 SmartClick.on(CHECKBOX_FILA),
-                WaitFor.aTime(2000),
-                WaitForResponse.withTarget(BOTON_PAGAR),
+                WaitUntil.the(BOTON_PAGAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
                 SmartClick.on(BOTON_PAGAR),
-                WaitForResponse.withTarget(METODO_TARJETA),
-                SmartClick.on(METODO_TARJETA))
+                WaitUntil.the(METODO_TARJETA, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
+                SmartClick.on(METODO_TARJETA),
+                WaitUntil.the(BOTON_CONTINUAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds())
             .otherwise(WaitFor.aTime(1000)));
-
     EvidenciaUtils.registrarCaptura(PASO_METODO);
 
     actor.attemptsTo(

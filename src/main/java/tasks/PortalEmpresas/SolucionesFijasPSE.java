@@ -1,5 +1,6 @@
 package tasks.PortalEmpresas;
 
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 import static userinterfaces.CmaxPage.BOTON_CONTINUAR;
 import static userinterfaces.CmaxPage.BOTON_PAGAR;
 import static userinterfaces.CmaxPage.CHECKBOX_CUSTOM;
@@ -9,14 +10,13 @@ import interactions.CambiarANuevaPestana;
 import interactions.CerrarPestañaYVolver;
 import interactions.JavaScriptSmartClick;
 import interactions.SmartClick;
-import interactions.WaitFor;
-import interactions.WaitForResponse;
 import java.util.Map;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
+import net.serenitybdd.screenplay.waits.WaitUntil;
 import net.thucydides.core.annotations.Step;
 import questions.EstadoDeFacturas;
 import tasks.PortalEmpresas.navegacion.IrAPagoDeSoluciones;
@@ -26,6 +26,9 @@ import utils.EvidenciaUtils;
 
 /** Pago de soluciones fijas por PSE. Ver nota de navegacion en SolucionesMovilesPSE. */
 public class SolucionesFijasPSE implements Task {
+
+  /** Tope para cada espera por elemento; el portal responde muy por debajo. */
+  private static final int ESPERA_SEGUNDOS = 30;
 
   private static final String SECCION = "soluciones fijas";
   private static final String PASO_METODO = "Selecciona metodo de pago PSE";
@@ -57,13 +60,11 @@ public class SolucionesFijasPSE implements Task {
 
     actor.attemptsTo(
         SmartClick.on(CHECKBOX_CUSTOM),
-        WaitFor.aTime(2000),
-        WaitForResponse.withTarget(BOTON_PAGAR),
+        WaitUntil.the(BOTON_PAGAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
         SmartClick.on(BOTON_PAGAR),
-        WaitFor.aTime(2000),
+        WaitUntil.the(METODO_PSE, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
         SmartClick.on(METODO_PSE),
-        WaitFor.aTime(2000));
-
+        WaitUntil.the(BOTON_CONTINUAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds());
     EvidenciaUtils.registrarCaptura(PASO_METODO);
 
     actor.attemptsTo(
