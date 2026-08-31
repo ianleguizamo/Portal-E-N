@@ -17,7 +17,6 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
-import net.serenitybdd.screenplay.conditions.Check;
 import net.thucydides.core.annotations.Step;
 import questions.EstadoDeFacturas;
 import tasks.PortalEmpresas.navegacion.IrAPagoDeSoluciones;
@@ -56,13 +55,10 @@ public class SolucionesMovilesGooglePlay implements Task {
     }
 
     actor.attemptsTo(
-        Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
-            .andIfSo(
-                SmartClick.on(CHECKBOX_FILA),
-                WaitFor.aTime(2000),
-                WaitForResponse.withTarget(BOTON_PAGAR),
-                SmartClick.on(BOTON_PAGAR))
-            .otherwise(WaitFor.aTime(1000)));
+        SmartClick.on(CHECKBOX_FILA),
+        WaitFor.aTime(2000),
+        WaitForResponse.withTarget(BOTON_PAGAR),
+        SmartClick.on(BOTON_PAGAR));
 
     actor.attemptsTo(WaitFor.aTime(2000), SmartClick.on(METODO_GOOOGLE_PLAY), WaitFor.aTime(2000));
 

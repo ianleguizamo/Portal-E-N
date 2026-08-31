@@ -10,14 +10,12 @@ import interactions.CambiarANuevaPestana;
 import interactions.CerrarPestañaYVolver;
 import interactions.JavaScriptSmartClick;
 import interactions.SmartClick;
-import interactions.WaitFor;
 import java.util.Map;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
-import net.serenitybdd.screenplay.conditions.Check;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import net.thucydides.core.annotations.Step;
 import questions.EstadoDeFacturas;
@@ -61,15 +59,13 @@ public class SolucionesFijasGooglePlay implements Task {
     }
 
     actor.attemptsTo(
-        Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
-            .andIfSo(
-                SmartClick.on(CHECKBOX_FILA),
-                WaitUntil.the(BOTON_PAGAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
-                SmartClick.on(BOTON_PAGAR),
-                WaitUntil.the(METODO_GOOOGLE_PLAY, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
-                JavaScriptSmartClick.on(METODO_GOOOGLE_PLAY),
-                WaitUntil.the(BOTON_CONTINUAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds())
-            .otherwise(WaitFor.aTime(1000)));
+        SmartClick.on(CHECKBOX_FILA),
+        WaitUntil.the(BOTON_PAGAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
+        SmartClick.on(BOTON_PAGAR),
+        WaitUntil.the(METODO_GOOOGLE_PLAY, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
+        JavaScriptSmartClick.on(METODO_GOOOGLE_PLAY),
+        WaitUntil.the(BOTON_CONTINUAR, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds());
+
     EvidenciaUtils.registrarCaptura(PASO_METODO);
 
     actor.attemptsTo(

@@ -8,7 +8,6 @@ import static userinterfaces.CmaxPage.CHECKBOX_FILA;
 import interactions.CambiarANuevaPestana;
 import interactions.CerrarPestañaYVolver;
 import interactions.SmartClick;
-import interactions.WaitFor;
 import interactions.WaitForResponse;
 import java.util.Map;
 import net.serenitybdd.core.steps.Instrumented;
@@ -17,7 +16,6 @@ import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.actions.Click;
-import net.serenitybdd.screenplay.conditions.Check;
 import net.thucydides.core.annotations.Step;
 import questions.EstadoDeFacturas;
 import tasks.PortalEmpresas.navegacion.IrAPagoDeSoluciones;
@@ -57,19 +55,15 @@ public class SolucionesMovilesBancolombia implements Task {
     }
 
     actor.attemptsTo(
-        Check.whether(CHECKBOX_FILA.resolveFor(actor).isPresent())
-            .andIfSo(
-                Click.on(CHECKBOX_FILA),
-                WaitForResponse.withTarget(BOTON_PAGAR),
-                Click.on(BOTON_PAGAR))
-            .otherwise(WaitFor.aTime(1000)));
+        Click.on(CHECKBOX_FILA),
+        WaitForResponse.withTarget(BOTON_PAGAR),
+        Click.on(BOTON_PAGAR));
 
     EvidenciaUtils.registrarCaptura(PASO_PAGAR);
 
     actor.attemptsTo(
-        Check.whether(BOTON_BANCOLOMBIA.resolveFor(actor).isPresent())
-            .andIfSo(WaitForResponse.withTarget(BOTON_BANCOLOMBIA), Click.on(BOTON_BANCOLOMBIA))
-            .otherwise(WaitFor.aTime(1000)));
+        WaitForResponse.withTarget(BOTON_BANCOLOMBIA),
+        Click.on(BOTON_BANCOLOMBIA));
 
     EvidenciaUtils.registrarCaptura(PASO_METODO);
 
