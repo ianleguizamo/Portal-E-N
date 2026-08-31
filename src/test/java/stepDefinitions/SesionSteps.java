@@ -10,6 +10,7 @@ import java.util.Map;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import tasks.PortalEmpresas.*;
+import utils.ConfigurarDriver;
 import utils.TestData;
 
 /**
@@ -21,6 +22,10 @@ public class SesionSteps {
     // que tiene que seguir estando en el glue: sin esto no hay actor en escena.
     @Before
     public void prepararEscenario() {
+        // Antes de que se abra el navegador: deja listo el chromedriver que
+        // corresponde al Chrome instalado. Es idempotente, solo trabaja la 1a vez.
+        ConfigurarDriver.chrome();
+
         OnStage.setTheStage(new OnlineCast());
     }
 
