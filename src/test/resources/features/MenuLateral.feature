@@ -10,7 +10,7 @@ Característica: Portal Empresas Claro - EyN
   Escenario: Inicio de sesión y redireccionamientos
     Entonces el sistema redirige correctamente al usuario
 
-  @EyN_PORT_Validar_MiCuenta
+  @EyN_PORT_Validar_MiCuenta @usuario_secundario
   Escenario: Validar información de mi cuenta desde el menú desplegable
     Cuando el usuario ingresa al menú desplegable
     Entonces el usuario valida la información de su cuenta

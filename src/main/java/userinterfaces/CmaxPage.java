@@ -386,4 +386,14 @@ public class CmaxPage {
           Target.the("texto Facturas por pagar")
                   .located(By.xpath("//span[starts-with(normalize-space(.),'Facturas por pagar')]"));
 
+  // Modal que el portal muestra cuando la cuenta agoto los cambios de datos del trimestre.
+  // Se ancla al texto y no a una ruta del DOM porque es lo unico estable del aviso.
+  public static final Target AVISO_LIMITE_CAMBIOS =
+          Target.the("aviso de límite de cambios permitidos")
+                  .locatedBy("//*[contains(text(),'Superaste el límite de cambios')]");
+
+  public static final Target BOTON_ACEPTAR_AVISO =
+          Target.the("botón Aceptar del aviso")
+                  .locatedBy("//button[normalize-space()='Aceptar']");
+
 }

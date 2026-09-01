@@ -12,6 +12,7 @@ import net.thucydides.core.annotations.Step;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.EsperarFinDeCarga;
 
 /**
  * Clic que ademas se hace cargo de la pestana nueva, si el enlace abre una.
@@ -80,6 +81,12 @@ public class SmartClick implements Task {
   @Step("Clic en #descripcion")
   public <T extends Actor> void performAs(T actor) {
     WebDriver driver = BrowseTheWeb.as(actor).getDriver();
+
+    // El portal deja el elemento en el DOM y visible mientras su velo de carga sigue
+    // encima; pulsarlo entonces falla con "Expected enabled element was not enabled".
+    // En una pagina ya asentada esto devuelve en milisegundos.
+    EsperarFinDeCarga.antesDeInteractuar();
+
     Set<String> ventanasAntes = driver.getWindowHandles();
 
     boolean abrePestana = abreEnPestanaNueva(driver, target.resolveFor(actor));

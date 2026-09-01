@@ -1,6 +1,9 @@
 package utils;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import models.User;
 import net.serenitybdd.core.Serenity;
@@ -17,6 +20,9 @@ public class TestData {
   /** Permite elegir cuenta sin tocar codigo: gradlew test -Dusuario=secundario */
   private static final String PROPIEDAD_ALIAS = "usuario";
 
+  /** Tag del feature que elige cuenta: @usuario_secundario -> alias "secundario". */
+  private static final String PREFIJO_TAG = "usuario_";
+
   private TestData() {
     // Clase de utilidad
   }
@@ -26,12 +32,31 @@ public class TestData {
    * el primero de real-user.json.
    */
   public static void cargarDatos() {
-    String alias = System.getProperty(PROPIEDAD_ALIAS);
+    cargarDatos(Collections.emptyList());
+  }
+
+  /**
+   * Carga el usuario del escenario.
+   *
+   * <p>Prioridad: {@code -Dusuario} manda sobre todo (util para una corrida puntual);
+   * si no, el tag {@code @usuario_<alias>} del escenario; si tampoco, el primero de
+   * real-user.json.
+   *
+   * <p>La via del tag existe porque Smart Tester lanza un comando fijo, tomado de
+   * projects.json, y no se le puede pasar una propiedad distinta por escenario. Marcando
+   * el .feature se reparte la carga entre cuentas sin tocar nada en ST.
+   *
+   * @param tagsDelEscenario tags tal como los da Cucumber, con la arroba incluida
+   */
+  public static void cargarDatos(Collection<String> tagsDelEscenario) {
+    String alias = aliasDesdePropiedad();
+
+    if (alias == null) {
+      alias = aliasDesdeTags(tagsDelEscenario);
+    }
 
     User usuario =
-        (alias == null || alias.trim().isEmpty())
-            ? TestDataProvider.getRealUser()
-            : TestDataProvider.getRealUser(alias.trim());
+        (alias == null) ? TestDataProvider.getRealUser() : TestDataProvider.getRealUser(alias);
 
     LOG.info("Escenario ejecutandose con el usuario '{}'", usuario.getAlias());
 
@@ -49,6 +74,25 @@ public class TestData {
    * la firma a todas seria mucho movimiento para ningun beneficio. Las claves son las
    * mismas que tenia el Excel, asi que ni las Tasks ni ContextoST notan el cambio.
    */
+  private static String aliasDesdePropiedad() {
+    String alias = System.getProperty(PROPIEDAD_ALIAS);
+    return (alias == null || alias.trim().isEmpty()) ? null : alias.trim();
+  }
+
+  private static String aliasDesdeTags(Collection<String> tags) {
+    if (tags == null) {
+      return null;
+    }
+
+    return tags.stream()
+        .map(t -> t.startsWith("@") ? t.substring(1) : t)
+        .filter(t -> t.toLowerCase(Locale.ROOT).startsWith(PREFIJO_TAG))
+        .map(t -> t.substring(PREFIJO_TAG.length()))
+        .filter(a -> !a.isEmpty())
+        .findFirst()
+        .orElse(null);
+  }
+
   private static Map<String, String> comoMapa(User usuario) {
     Map<String, String> datos = new HashMap<>();
     datos.put("Usuario", texto(usuario.getUsuario()));

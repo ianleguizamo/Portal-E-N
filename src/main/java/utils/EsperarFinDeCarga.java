@@ -45,12 +45,30 @@ public class EsperarFinDeCarga {
   }
 
   /**
+   * Variante para usar ANTES de interactuar con la pagina.
+   *
+   * <p>Se salta la confirmacion de {@value #CONFIRMACION_MS} ms de {@link #ahora()}: alli
+   * hace falta porque la captura va justo despues de un clic y el velo puede no haber
+   * aparecido todavia. Antes de pulsar no aplica, y con 87 usos de SmartClick ese margen
+   * seria medio minuto por corrida tirado a la basura.
+   */
+  public static void antesDeInteractuar() {
+    esperarVelo(false);
+  }
+
+  /**
    * Bloquea hasta que el portal termine de cargar, como mucho {@value #TIMEOUT_MS} ms.
+   *
+   * <p>Para usar DESPUES de una accion, tipicamente antes de una captura.
    *
    * <p>Nunca lanza: esto acompana a la evidencia, y una captura imperfecta no debe tumbar
    * un escenario que por lo demas iba bien. Si se agota el tiempo lo deja en el log.
    */
   public static void ahora() {
+    esperarVelo(true);
+  }
+
+  private static void esperarVelo(boolean confirmar) {
     try {
       WebDriver driver = ThucydidesWebDriverSupport.getDriver();
       if (driver == null) {
@@ -61,13 +79,13 @@ public class EsperarFinDeCarga {
       BooleanSupplier oculto = () -> Boolean.TRUE.equals(js.executeScript(VELO_OCULTO));
 
       if (!esperarHasta(oculto, TIMEOUT_MS)) {
-        LOG.warn("El portal seguia cargando tras {} ms; la captura puede salir incompleta", TIMEOUT_MS);
+        LOG.warn("El portal seguia cargando tras {} ms", TIMEOUT_MS);
         return;
       }
 
       // El clic pudo ser tan reciente que el velo aun no habia aparecido: si asoma en
       // este margen, se vuelve a esperar a que se vaya.
-      if (!seMantieneOculto(oculto) && !esperarHasta(oculto, TIMEOUT_MS)) {
+      if (confirmar && !seMantieneOculto(oculto) && !esperarHasta(oculto, TIMEOUT_MS)) {
         LOG.warn("El portal volvio a cargar y no termino a tiempo");
       }
 

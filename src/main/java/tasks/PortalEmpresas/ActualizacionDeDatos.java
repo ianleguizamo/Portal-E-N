@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import questions.LimiteDeCambiosAlcanzado;
+import tasks.PortalEmpresas.datos.RegistrarLimiteDeCambios;
 import utils.CerrarEncuestaQualtrics;
 import utils.EvidenciaUtils;
 
@@ -58,6 +60,14 @@ public class ActualizacionDeDatos implements Task {
         );
 
         CerrarEncuestaQualtrics.enIframeSiAparece(actor);
+
+        // La cuenta puede haber agotado su cupo de cambios del trimestre. En ese caso el
+        // portal responde con un aviso en vez del formulario: se documenta y se termina
+        // en verde, porque no es un fallo del portal ni de la prueba.
+        if (actor.asksFor(LimiteDeCambiosAlcanzado.enLaPagina())) {
+            actor.attemptsTo(RegistrarLimiteDeCambios.alcanzado());
+            return;
+        }
 
         EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 
