@@ -33,7 +33,7 @@ gradlew.bat
 .idea/sonarlint
 
 # Package Files #
-*.jar
+#*.jar
 *.nar
 *.zip
 *.tar.gz
