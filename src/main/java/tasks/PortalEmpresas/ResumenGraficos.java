@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.CerrarEncuestaQualtrics;
 import utils.EvidenciaUtils;
 
 public class ResumenGraficos implements Task {
@@ -46,14 +47,10 @@ public class ResumenGraficos implements Task {
         EvidenciaUtils.registrarCaptura("Consulta tus facturas");
 
         actor.attemptsTo(
-                SmartClick.on(RESUMEN_GRAFICO_FACTURAS),
-
-                SwitchToSurveyIframe.now(),
-                WaitForResponse.withTarget(BOTON_CERRAR_ENCUESTA),
-                Click.on(BOTON_CERRAR_ENCUESTA),
-                SwitchToDefaultContent.now()
-
+                SmartClick.on(RESUMEN_GRAFICO_FACTURAS)
         );
+
+        CerrarEncuestaQualtrics.enIframeSiAparece(actor);
 
         EvidenciaUtils.registrarCaptura("graficos");
 

@@ -49,9 +49,13 @@ public class CmaxPage {
           Target.the("Resumen Gráfico de Facturas")
                   .locatedBy("//a[@href='/group/guest/analisis-grafico']");
 
+  // El portal cambio la etiqueta de estas tarjetas de <div> a <button>, y el localizador
+  // pedia <div> con @class EXACTAMENTE 'account-item'. Ahora es agnostico de etiqueta y
+  // tolera clases adicionales, que son las dos formas en que esto se rompe.
+  // PENDIENTE: el numero de cuenta esta quemado aqui; deberia salir de real-user.json.
   public static final Target ACCOUNT_ITEM =
           Target.the("Número de cuenta")
-                  .locatedBy("//div[@class='account-item' and normalize-space()='8.22448979']");
+                  .locatedBy("//*[contains(@class,'account-item')][normalize-space()='8.22448979']");
 
   public static final Target CUENTA_MAESTRA =
           Target.the("Cuenta maestra")
@@ -73,6 +77,16 @@ public class CmaxPage {
   public static final Target LINE_CHECKBOX =
           Target.the("Checkbox de selección de línea")
                   .located(By.cssSelector("div.line-item input.custom-radio"));
+
+  // Variante de la grilla de "Detalle de tu plan": ahi el input.custom-radio es
+  // decorativo y quien lleva el estado es el contenedor, que expone role="radio" y
+  // aria-checked. Pulsar el input no cambiaba nada: el clic "funcionaba" pero la linea
+  // quedaba sin seleccionar y Continuar seguia deshabilitado.
+  // Se deja aparte y no se cambia LINE_CHECKBOX porque otras pantallas (Paquetes de
+  // datos) si responden al input y alli el contenedor no existe con ese role.
+  public static final Target LINE_ITEM_RADIO =
+          Target.the("Tarjeta de línea seleccionable")
+                  .located(By.cssSelector("div.line-item[role='radio']"));
 
   public static final Target CUENTA_MAESTRA_CONSUMOS =
           Target.the("Cuenta maestra en consumos")

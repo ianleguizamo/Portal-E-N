@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.CerrarEncuestaQualtrics;
 import utils.EvidenciaUtils;
 
 public class ActualizacionDeDatos implements Task {
@@ -53,16 +54,10 @@ public class ActualizacionDeDatos implements Task {
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(CUENTA_MAESTRA),
-
-
-                SwitchToSurveyIframe.now(),
-                WaitForResponse.withTarget(BOTON_CERRAR_ENCUESTA),
-                Click.on(BOTON_CERRAR_ENCUESTA),
-                SwitchToDefaultContent.now()
-
-
+                Click.on(CUENTA_MAESTRA)
         );
+
+        CerrarEncuestaQualtrics.enIframeSiAparece(actor);
 
         EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 

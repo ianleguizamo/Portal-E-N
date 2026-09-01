@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import utils.CerrarEncuestaQualtrics;
 import utils.EvidenciaUtils;
 
 public class ConsultarConsumos implements Task {
@@ -54,12 +55,12 @@ public class ConsultarConsumos implements Task {
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(CUENTA_MAESTRA),
+                Click.on(CUENTA_MAESTRA)
+        );
 
-                SwitchToSurveyIframe.now(),
-                WaitForResponse.withTarget(BOTON_CERRAR_ENCUESTA),
-                Click.on(BOTON_CERRAR_ENCUESTA),
-                SwitchToDefaultContent.now(),
+        CerrarEncuestaQualtrics.enIframeSiAparece(actor);
+
+        actor.attemptsTo(
                 WaitForResponse.withTarget(CUENTA_MAESTRA_CONSUMOS)
         );
 
