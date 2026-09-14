@@ -1,0 +1,18 @@
+# Finales de linea fijados en el repo, no en la configuracion de cada PC.
+#
+# Sin esto el resultado dependia del core.autocrlf de quien clonara: el script de
+# shell llegaba con CRLF y fallaba con "/usr/bin/env: 'sh\r'", y gradlew.bat no
+# estaba ni versionado, asi que en un clon nuevo en Windows gradlew no arrancaba.
+
+# Script de shell: siempre LF, o no lo ejecuta ni Git Bash ni Linux.
+gradlew         text eol=lf
+
+# Scripts de Windows: siempre CRLF.
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+
+# Binarios: que git no intente convertir nada dentro.
+*.jar           binary
+*.png           binary
+*.xlsx          binary
+*.docx          binary

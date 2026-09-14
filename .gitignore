@@ -10,7 +10,6 @@ reportes/
 # Gradle files
 .gradle
 build/
-gradlew.bat
 # Compiled class file
 *.class
 
