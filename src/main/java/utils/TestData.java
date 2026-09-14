@@ -27,10 +27,7 @@ public class TestData {
     // Clase de utilidad
   }
 
-  /**
-   * Carga el usuario indicado por la propiedad {@code -Dusuario}; si no se indica ninguna,
-   * el primero de real-user.json.
-   */
+  /** Como {@link #cargarDatos(Collection)} sin tags: -Dusuario o, si no, el primer usuario. */
   public static void cargarDatos() {
     cargarDatos(Collections.emptyList());
   }
@@ -66,14 +63,6 @@ public class TestData {
     ContextoST.registrarDatos(comoMapa(usuario));
   }
 
-  /**
-   * Los datos del usuario en el formato que esperan las Tasks.
-   *
-   * <p>Se mantiene el mapa de claves en vez de pasar el {@link User} directamente porque
-   * mas de treinta Tasks reciben este parametro y solo RealizarIngreso lo lee; cambiarles
-   * la firma a todas seria mucho movimiento para ningun beneficio. Las claves son las
-   * mismas que tenia el Excel, asi que ni las Tasks ni ContextoST notan el cambio.
-   */
   private static String aliasDesdePropiedad() {
     String alias = System.getProperty(PROPIEDAD_ALIAS);
     return (alias == null || alias.trim().isEmpty()) ? null : alias.trim();
@@ -93,6 +82,14 @@ public class TestData {
         .orElse(null);
   }
 
+  /**
+   * Los datos del usuario en el formato que esperan las Tasks.
+   *
+   * <p>Se mantiene el mapa de claves en vez de pasar el {@link User} directamente porque
+   * mas de treinta Tasks reciben este parametro y solo RealizarIngreso lo lee; cambiarles
+   * la firma a todas seria mucho movimiento para ningun beneficio. Las claves son las
+   * mismas que tenia el Excel, asi que ni las Tasks ni ContextoST notan el cambio.
+   */
   private static Map<String, String> comoMapa(User usuario) {
     Map<String, String> datos = new HashMap<>();
     datos.put("Usuario", texto(usuario.getUsuario()));
