@@ -15,7 +15,7 @@ Característica: Portal Empresas Claro - EyN
     Cuando el usuario ingresa al menú desplegable
     Entonces el usuario valida la información de su cuenta
 
-  @EyN_PORT_Gestion_Usuarios
+  @EyN_PORT_Gestion_Usuarios @usuario_secundario
   Escenario: Gestión de usuarios desde el menú desplegable
     Cuando el usuario ingresa al menú desplegable
     Entonces el usuario valida la gestión de usuarios
@@ -30,7 +30,7 @@ Característica: Portal Empresas Claro - EyN
     Cuando el usuario ingresa al menú desplegable
     Entonces el usuario visualiza la información del consultor asignado
 
-  @EyN_PORT_Doc_Claro_Col
+  @EyN_PORT_Doc_Claro_Col @usuario_secundario
   Escenario: Consultar documentación de Claro Colombia desde el menú desplegable
     Cuando el usuario ingresa al menú desplegable
     Entonces el usuario accede a la documentación de Claro Colombia
