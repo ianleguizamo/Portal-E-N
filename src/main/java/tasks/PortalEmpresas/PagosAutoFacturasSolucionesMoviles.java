@@ -1,5 +1,6 @@
 package tasks.PortalEmpresas;
 
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 import static userinterfaces.CmaxPage.*;
 import static utils.Constants.PAGOS_AUTOMATICOS;
 
@@ -10,15 +11,29 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
+import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.actions.Scroll;
+import net.serenitybdd.screenplay.waits.WaitUntil;
 import net.thucydides.core.annotations.Step;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.CerrarEncuestaQualtrics;
 import utils.EvidenciaUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Pagos automaticos de facturas, opcion Soluciones moviles.
+ *
+ * <p>Todo el contenido de esta pantalla lo sirve el portal de pagos externo dentro del iframe
+ * IFRAME_PAGOS_AUTOMATICOS. La version anterior buscaba el titulo en el HTML de la pagina
+ * principal, donde nunca esta, asi que el tag no habia pasado nunca en Smart Tester.
+ */
 public class PagosAutoFacturasSolucionesMoviles implements Task {
+
+    private static final int ESPERA_SEGUNDOS = 30;
 
     Map<String, String> data = new HashMap<>();
 
@@ -42,19 +57,30 @@ public class PagosAutoFacturasSolucionesMoviles implements Task {
         actor.attemptsTo(
                 SmartClick.on(PAGO_AUTOMATICO_FACTURAS)
         );
-        WaitFor.silencioso(2000);
         EvidenciaUtils.registrarCaptura(paso2);
 
-        CerrarEncuestaQualtrics.siAparece(actor);
+        // La encuesta vive en la pagina principal: se cierra antes de entrar al iframe.
+        CerrarEncuestaQualtrics.enIframeSiAparece(actor);
 
-        ValidarTexto.contiene(actor, PAGOS_AUTOMATICOS, paso3);
+        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
+        new WebDriverWait(driver, ESPERA_SEGUNDOS)
+                .until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(IFRAME_PAGOS_AUTOMATICOS));
 
-        actor.attemptsTo(
-                WaitFor.aTime(1000),
-                SmartClick.on(SOLUCIONES_MOVILES2),
-                Scroll.to(DESCARGAR_ARCHIVO)
-        );
-        EvidenciaUtils.registrarCaptura(paso4);
+        try {
+            actor.attemptsTo(
+                    WaitUntil.the(TITULO_PAGOS_AUTOMATICOS, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds()
+            );
+            ValidarTexto.contiene(actor, PAGOS_AUTOMATICOS, paso3);
 
+            actor.attemptsTo(
+                    SmartClick.on(SOLUCIONES_MOVILES2),
+                    WaitUntil.the(DESCARGAR_ARCHIVO, isVisible()).forNoMoreThan(ESPERA_SEGUNDOS).seconds(),
+                    Scroll.to(DESCARGAR_ARCHIVO)
+            );
+            EvidenciaUtils.registrarCaptura(paso4);
+
+        } finally {
+            driver.switchTo().defaultContent();
+        }
     }
 }

@@ -52,14 +52,18 @@ public class CmaxPage {
   // El portal cambio la etiqueta de estas tarjetas de <div> a <button>, y el localizador
   // pedia <div> con @class EXACTAMENTE 'account-item'. Ahora es agnostico de etiqueta y
   // tolera clases adicionales, que son las dos formas en que esto se rompe.
+  // Ademas, segun la pantalla la tarjeta se llama account-item (Detalle de tu plan, Paquetes,
+  // Cambio de SIM) o account-card (Cambio de numero, Servicio tecnico...): se aceptan ambas.
   // PENDIENTE: el numero de cuenta esta quemado aqui; deberia salir de real-user.json.
   public static final Target ACCOUNT_ITEM =
           Target.the("Número de cuenta")
-                  .locatedBy("//*[contains(@class,'account-item')][normalize-space()='8.22448979']");
+                  .locatedBy("//*[contains(@class,'account-item') or contains(@class,'account-card')][normalize-space()='8.22448979']");
 
+  // Primera tarjeta de cuenta maestra. Sin etiqueta: en unas pantallas es <div> y en otras
+  // (Servicio tecnico, Reposicion de SIM) <button>.
   public static final Target CUENTA_MAESTRA =
           Target.the("Cuenta maestra")
-                  .located(By.cssSelector("div.account-card"));
+                  .located(By.cssSelector(".account-card"));
 
   public static final Target HEADER_TIPO_SOLICITUD =
           Target.the("Header Tipo de solicitud")
@@ -70,9 +74,18 @@ public class CmaxPage {
           Target.the("Card de cuenta")
                   .located(By.cssSelector("div.card-body"));
 
+  // Primera linea de la cuenta elegida (Servicio tecnico, Reposicion de SIM). Antes pedia la
+  // linea 3226806277 quemada, que ya no pertenece a esa cuenta (hoy su unica linea es otra),
+  // asi que la espera no se cumplia nunca. La tarjeta es <button> o <div> segun la pantalla.
   public static final Target TARJETA_LINEA_SELECCIONABLE =
           Target.the("Tarjeta de línea seleccionable")
-                  .located(By.xpath("//div[contains(@class,'card-body') and .//h5/strong[text()='3226806277']]"));
+                  .located(By.xpath("(//div[contains(@class,'grid-container-line')]//*[contains(@class,'card-line')])[1]"));
+
+  // Tarjeta de linea del componente nuevo (Cambio de numero): div.line-card en lugar del
+  // input.custom-radio de CHECKBOX_CUSTOM_RADIO, que Cambio de SIM sigue usando.
+  public static final Target LINE_CARD =
+          Target.the("Tarjeta de línea móvil")
+                  .located(By.cssSelector("div.line-card"));
 
   public static final Target LINE_CHECKBOX =
           Target.the("Checkbox de selección de línea")
@@ -88,10 +101,18 @@ public class CmaxPage {
           Target.the("Tarjeta de línea seleccionable")
                   .located(By.cssSelector("div.line-item[role='radio']"));
 
+  // Sin numero de cuenta: Consultar consumos pulsa la primera tarjeta (1.91964964) y el
+  // localizador exigia 8.22448979, asi que nunca aparecia aunque la pagina cargara bien.
+  // Lo que interesa comprobar es que cargo el detalle de la cuenta elegida, sea cual sea.
   public static final Target CUENTA_MAESTRA_CONSUMOS =
           Target.the("Cuenta maestra en consumos")
                   .locatedBy(
-                          "//div[contains(@class,'consumptions-source') and normalize-space()='Cuenta maestra: 8.22448979']");
+                          "//div[contains(@class,'consumptions-source') and starts-with(normalize-space(),'Cuenta maestra:')]");
+
+  // Resultado de "Detalle de tu plan": la tabla con el plan asignado a la linea elegida.
+  public static final Target PLAN_ASIGNADO =
+          Target.the("Plan asignado a la línea")
+                  .located(By.cssSelector("div.planName-column button.link-detalle-plan"));
 
   public static final Target CONSUMO_DATOS =
           Target.the("Botón Consumo de datos")
@@ -102,9 +123,10 @@ public class CmaxPage {
                   .locatedBy("//div[@class='line-item']//div[@class='line' and normalize-space()='3226806277']" +
                           "/ancestor::div[@class='line-item']//input[@class='custom-radio']");
 
+  // Sin etiqueta: en Servicio tecnico el "Continuar" es un <div>, en Reposicion un <button>.
   public static final Target BOTON_CONTINUAR1 =
           Target.the("Botón Continuar")
-                  .located(By.xpath("//button[contains(@class,'button-select-enable') and contains(@class,'button-size')]"));
+                  .located(By.xpath("//*[contains(@class,'button-select-enable') and contains(@class,'button-size')]"));
 
   public static final Target BTN_ACEPTAR = Target.the("botón aceptar")
           .located(By.cssSelector("button.acept-btn"));
@@ -126,9 +148,12 @@ public class CmaxPage {
           Target.the("Texto descriptivo de Roaming Internacional")
                   .located(By.cssSelector("div.text-description"));
 
+  // Por el texto del menu y no por el href: el portal cambio la ruta de
+  // /group/movil/cambio-de-sim a /group/movil/cambio-sim y el enlace dejo de encontrarse
+  // aunque la opcion seguia en pantalla.
   public static final Target CAMBIO_SIM_CARD =
           Target.the("Cambio de SIM Card")
-                  .locatedBy("//a[@href='/group/movil/cambio-de-sim']");
+                  .locatedBy("//div[contains(@class,'item-type-menu')]//a[.//div[@class='container-text' and normalize-space()='Cambio de SIM Card']]");
 
   public static final Target CAMBIO_DE_NUMERO =
           Target.the("Opción Cambio de Número")
@@ -177,6 +202,22 @@ public class CmaxPage {
   public static final Target BTN_CONTINUAR =
           Target.the("Botón Continuar")
                   .located(By.cssSelector("button.continue-button.active"));
+
+  // Pagos automaticos lo sirve el portal de pagos externo dentro de este iframe; el titulo
+  // y las opciones (SOLUCIONES_MOVILES2) solo existen una vez dentro de el.
+  public static final By IFRAME_PAGOS_AUTOMATICOS = By.id("domicilarp");
+
+  public static final Target TITULO_PAGOS_AUTOMATICOS =
+          Target.the("Título Pagos automáticos")
+                  .locatedBy("//h1[normalize-space()='Pagos automáticos']");
+
+  // Pantallas con el componente de seleccion nuevo (Detalle de tus cuentas maestras, Cambio
+  // de numero): alli el boton es continue-btn. Con BTN_CONTINUAR no se encontraba y Serenity
+  // lo reportaba como "Expected enabled element was not enabled", que despista porque suena
+  // a boton deshabilitado.
+  public static final Target BTN_CONTINUAR_SELECCION =
+          Target.the("Botón Continuar")
+                  .located(By.cssSelector("button.continue-btn.active"));
 
   public static final Target INFO_SIM =
           Target.the("Información SIM Card")
@@ -265,9 +306,11 @@ public class CmaxPage {
   public static final Target CONTENEDOR_OPINION = Target.the("contenedor mensaje de opinión")
           .located(By.xpath("//div[@style='text-align: center;' and .//strong[contains(text(),'Tu opinión es importante')]]"));
 
+  // Dentro de IFRAME_PAGOS_AUTOMATICOS, en la vista de Soluciones Moviles. Solo se usa para
+  // llegar hasta el y dejar evidencia: pulsarlo descargaria el Excel de domiciliaciones.
   public static final Target DESCARGAR_ARCHIVO =
           Target.the("Descargar archivo")
-                  .located(By.xpath("//SELECTOR_PROVISIONAL"));
+                  .located(By.xpath("//input[@type='button' and @value='Descargar Archivo']"));
 
   public static final Target BOTON_CERRAR_ENCUESTA = Target.the("botón cerrar encuesta Qualtrics")
           .located(By.xpath("//*[@id=\"formOperacion\"]/article[2]/div/input"));

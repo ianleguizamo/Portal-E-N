@@ -44,7 +44,7 @@ public class TarjetasRegistradas implements Task {
 
         WaitFor.silencioso(3000);
 
-        CerrarEncuestaQualtrics.siAparece(actor);
+        CerrarEncuestaQualtrics.enIframeSiAparece(actor);
 
         WaitFor.silencioso(5000);
 

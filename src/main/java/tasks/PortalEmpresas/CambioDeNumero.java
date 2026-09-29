@@ -52,13 +52,13 @@ public class CambioDeNumero implements Task {
 
         actor.attemptsTo(
                 SmartClick.on(ACCOUNT_ITEM),
-                SmartClick.on(CHECKBOX_CUSTOM_RADIO)
+                SmartClick.on(LINE_CARD)
         );
 
         EvidenciaUtils.registrarCaptura("elegir numero");
 
         actor.attemptsTo(
-                SmartClick.on(BTN_CONTINUAR),
+                SmartClick.on(BTN_CONTINUAR_SELECCION),
                 WaitForResponse.withTarget(INFO_CAMBIO_NUMERO)
         );
 

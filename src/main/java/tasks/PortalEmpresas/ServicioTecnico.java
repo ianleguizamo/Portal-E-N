@@ -46,13 +46,13 @@ public class ServicioTecnico implements Task {
 
         actor.attemptsTo(
                 SmartClick.on(SERVICIO_TECNICO_DOMICILIO),
-                WaitForResponse.withTarget(CUENTA_CARD_CONTENEDOR)
+                WaitForResponse.withTarget(CUENTA_MAESTRA)
         );
 
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                SmartClick.on(CUENTA_CARD_CONTENEDOR),
+                SmartClick.on(CUENTA_MAESTRA),
                 WaitForResponse.withTarget(TARJETA_LINEA_SELECCIONABLE)
         );
 

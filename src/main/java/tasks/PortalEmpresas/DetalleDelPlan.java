@@ -59,15 +59,20 @@ public class DetalleDelPlan implements Task {
 
         EvidenciaUtils.registrarCaptura("Elegir numero");
 
+        // Continuar por JavaScript: en esta pantalla el boton esta en el DOM y activo, pero el
+        // portal no lo pinta (no sale en la captura) y Selenium lo rechaza con "element not
+        // interactable". El clic por JS dispara igual su manejador.
         actor.attemptsTo(
                 SmartClick.on(LINE_ITEM_RADIO),
-                SmartClick.on(BTN_CONTINUAR)
+                JavaScriptSmartClick.on(BTN_CONTINUAR)
         );
 
         CerrarEncuestaQualtrics.enIframeSiAparece(actor);
 
+        // Antes esperaba CUENTA_MAESTRA_CONSUMOS, que es de la pagina de Consultar consumos y
+        // aqui no existe: el tag no podia pasar aunque el detalle cargara bien.
         actor.attemptsTo(
-                WaitForResponse.withTarget(CUENTA_MAESTRA_CONSUMOS)
+                WaitForResponse.withTarget(PLAN_ASIGNADO)
         );
 
         EvidenciaUtils.registrarCaptura("detalle del plan");

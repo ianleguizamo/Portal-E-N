@@ -53,7 +53,7 @@ public class DetalleCuentaMaestra implements Task {
 
         actor.attemptsTo(
                 SmartClick.on(CUENTA_MAESTRA),
-                SmartClick.on(BTN_CONTINUAR)
+                SmartClick.on(BTN_CONTINUAR_SELECCION)
         );
 
         EvidenciaUtils.registrarCaptura("Elegir numero");
