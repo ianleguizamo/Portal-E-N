@@ -9,7 +9,6 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.conditions.Check;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -39,29 +38,29 @@ public class ReposicionSIM implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(SOLUCIONES_MOVILES),
+                SmartClick.on(SOLUCIONES_MOVILES),
                 WaitForResponse.withTarget(OPCION_REPOSICION_SIM_CARD)
         );
 
         EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
-                Click.on(OPCION_REPOSICION_SIM_CARD),
+                SmartClick.on(OPCION_REPOSICION_SIM_CARD),
                 WaitForResponse.withTarget(CUENTA_CARD_CONTENEDOR)
         );
 
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(CUENTA_CARD_CONTENEDOR),
+                SmartClick.on(CUENTA_CARD_CONTENEDOR),
                 WaitForResponse.withTarget(TARJETA_LINEA_SELECCIONABLE)
         );
 
         EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 
         actor.attemptsTo(
-                Click.on(TARJETA_LINEA_SELECCIONABLE),
-                Click.on(BOTON_CONTINUAR1),
+                SmartClick.on(TARJETA_LINEA_SELECCIONABLE),
+                SmartClick.on(BOTON_CONTINUAR1),
                 WaitForResponse.withTarget(HEADER_TABLA_LINEAS)
 
         );

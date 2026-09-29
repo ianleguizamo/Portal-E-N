@@ -9,7 +9,6 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.conditions.Check;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -40,7 +39,7 @@ public class ConsultarConsumos implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(SOLUCIONES_MOVILES),
+                SmartClick.on(SOLUCIONES_MOVILES),
                 ScrollToTarget.to(CONSULTAR_CONSUMOS),
                 WaitForResponse.withTarget(CONSULTAR_CONSUMOS)
         );
@@ -48,14 +47,14 @@ public class ConsultarConsumos implements Task {
         EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
-                Click.on(CONSULTAR_CONSUMOS),
+                SmartClick.on(CONSULTAR_CONSUMOS),
                 WaitForResponse.withTarget(CUENTA_MAESTRA)
         );
 
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(CUENTA_MAESTRA)
+                SmartClick.on(CUENTA_MAESTRA)
         );
 
         CerrarEncuestaQualtrics.enIframeSiAparece(actor);
@@ -67,7 +66,7 @@ public class ConsultarConsumos implements Task {
         EvidenciaUtils.registrarCaptura("Consumos de minutos");
 
         actor.attemptsTo(
-                Click.on(CONSUMO_DATOS),
+                SmartClick.on(CONSUMO_DATOS),
                 WaitForResponse.withTarget(CUENTA_MAESTRA_CONSUMOS)
         );
 

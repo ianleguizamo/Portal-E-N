@@ -9,7 +9,6 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.conditions.Check;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -39,28 +38,28 @@ public class PaquetesDatos implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(SOLUCIONES_MOVILES),
+                SmartClick.on(SOLUCIONES_MOVILES),
                 WaitForResponse.withTarget(PAQUETES_DE_DATOS)
         );
 
         EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
-                Click.on(PAQUETES_DE_DATOS),
+                SmartClick.on(PAQUETES_DE_DATOS),
                 WaitForResponse.withTarget(ACCOUNT_ITEM)
         );
 
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(ACCOUNT_ITEM),
+                SmartClick.on(ACCOUNT_ITEM),
                 WaitForResponse.withTarget(LINE_CHECKBOX)
         );
 
         EvidenciaUtils.registrarCaptura("Datos de la cuenta");
 
         actor.attemptsTo(
-                Click.on(LINE_CHECKBOX)
+                SmartClick.on(LINE_CHECKBOX)
         );
 
         EvidenciaUtils.registrarCaptura("Paquetes de datos");

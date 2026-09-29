@@ -9,7 +9,6 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.conditions.Check;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -39,27 +38,27 @@ public class CambioDeNumero implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(SOLUCIONES_MOVILES),
+                SmartClick.on(SOLUCIONES_MOVILES),
                 WaitForResponse.withTarget(CAMBIO_DE_NUMERO)
         );
 
         EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
-                Click.on(CAMBIO_DE_NUMERO)
+                SmartClick.on(CAMBIO_DE_NUMERO)
         );
 
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(ACCOUNT_ITEM),
-                Click.on(CHECKBOX_CUSTOM_RADIO)
+                SmartClick.on(ACCOUNT_ITEM),
+                SmartClick.on(CHECKBOX_CUSTOM_RADIO)
         );
 
         EvidenciaUtils.registrarCaptura("elegir numero");
 
         actor.attemptsTo(
-                Click.on(BTN_CONTINUAR),
+                SmartClick.on(BTN_CONTINUAR),
                 WaitForResponse.withTarget(INFO_CAMBIO_NUMERO)
         );
 

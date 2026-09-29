@@ -9,7 +9,6 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.conditions.Check;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -40,29 +39,29 @@ public class DetalleDelPlan implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(SOLUCIONES_MOVILES),
+                SmartClick.on(SOLUCIONES_MOVILES),
                 ScrollToTarget.to(DETALLE_DE_TU_PLAN)
         );
 
         EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
-                Click.on(DETALLE_DE_TU_PLAN),
+                SmartClick.on(DETALLE_DE_TU_PLAN),
                 WaitForResponse.withTarget(ACCOUNT_ITEM)
         );
 
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(ACCOUNT_ITEM),
+                SmartClick.on(ACCOUNT_ITEM),
                 WaitForResponse.withTarget(LINE_ITEM_RADIO)
         );
 
         EvidenciaUtils.registrarCaptura("Elegir numero");
 
         actor.attemptsTo(
-                Click.on(LINE_ITEM_RADIO),
-                Click.on(BTN_CONTINUAR)
+                SmartClick.on(LINE_ITEM_RADIO),
+                SmartClick.on(BTN_CONTINUAR)
         );
 
         CerrarEncuestaQualtrics.enIframeSiAparece(actor);

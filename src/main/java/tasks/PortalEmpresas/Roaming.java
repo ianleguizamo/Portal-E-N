@@ -9,7 +9,6 @@ import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.conditions.Check;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
@@ -39,23 +38,23 @@ public class Roaming implements Task {
     public <T extends Actor> void performAs(T actor) {
 
         actor.attemptsTo(
-                Click.on(SOLUCIONES_MOVILES),
+                SmartClick.on(SOLUCIONES_MOVILES),
                 WaitForResponse.withTarget(ROAMING_INTERNACIONAL)
         );
 
         EvidenciaUtils.registrarCaptura("Soluciones moviles");
 
         actor.attemptsTo(
-                Click.on(ROAMING_INTERNACIONAL),
+                SmartClick.on(ROAMING_INTERNACIONAL),
                 WaitForResponse.withTarget(CUENTA_CARD_CONTENEDOR)
         );
 
         EvidenciaUtils.registrarCaptura("elegir cuenta");
 
         actor.attemptsTo(
-                Click.on(CUENTA_CARD_CONTENEDOR),
+                SmartClick.on(CUENTA_CARD_CONTENEDOR),
                 WaitForResponse.withTarget(BOTON_ACEPTAR),
-                Click.on(BOTON_ACEPTAR)
+                SmartClick.on(BOTON_ACEPTAR)
 
         );
 

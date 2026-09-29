@@ -7,6 +7,7 @@ import interactions.EnterPasswordSecure;
 import interactions.IngresarTexto;
 import interactions.JavaScriptSmartClick;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import questions.EnPantallaDeLogin;
 import utils.ContextoST;
 import utils.EvidenciaUtils;
 
@@ -32,6 +34,7 @@ public class RealizarIngreso implements Task {
     private static final Logger LOGGER = Logger.getLogger(RealizarIngreso.class);
     private static final String paso = "Realizar inicio de sesion";
     private static final String URL_LOGIN = "https://miclaroempresas.com.co/login";
+    private static final String RUTA_LOGIN = "/login";
 
     /** Cantidad de intentos de login ante el bloqueo anti-bot. Se puede ajustar con -Dlogin.maxIntentos=N */
     private static final int MAX_INTENTOS = Integer.getInteger("login.maxIntentos", 3);
@@ -78,6 +81,17 @@ public class RealizarIngreso implements Task {
                     actor.attemptsTo(Open.url(URL_LOGIN));
                     WaitFor.silencioso(4000);
                 }
+
+                // El aviso no siempre es un bloqueo: a veces el portal lo muestra y aun asi deja
+                // la sesion iniciada. Entonces /login redirige al inicio y el intento siguiente
+                // moria buscando el campo de correo (NoSuchElement en _cenLoginPortlet_userName),
+                // tumbando un escenario que ya estaba dentro. Paso en Doc_Claro_Col y en
+                // Descarga_Facturas.
+                if (sesionYaIniciada(actor)) {
+                    LOGGER.info("[Login Portal E&N] Intento " + intento
+                            + ": el portal mostro el aviso pero la sesion quedo iniciada; se continua.");
+                    ingresoOk = true;
+                }
             } else {
                 ingresoOk = true;
             }
@@ -104,6 +118,30 @@ public class RealizarIngreso implements Task {
                     "No fue posible iniciar sesion en el Portal Empresas y Negocios: el portal bloqueo el ingreso con "
                     + "'Algo salio mal al procesar tu solicitud' tras " + MAX_INTENTOS + " intentos "
                     + "(probable deteccion anti-bot / captcha).");
+        }
+    }
+
+    /**
+     * El portal nos tiene dentro aunque haya mostrado el aviso de error.
+     *
+     * <p>Se exigen las dos senales para no dar por bueno un login que solo va lento: que la URL
+     * haya salido de /login (el portal redirigio) y que el formulario no este. Si la URL sigue
+     * en /login se responde al instante, sin gastar la espera del formulario.
+     */
+    private boolean sesionYaIniciada(Actor actor) {
+        if (rutaActual(actor).startsWith(RUTA_LOGIN)) {
+            return false;
+        }
+        return !actor.asksFor(EnPantallaDeLogin.ahora());
+    }
+
+    private String rutaActual(Actor actor) {
+        try {
+            String ruta = URI.create(BrowseTheWeb.as(actor).getDriver().getCurrentUrl()).getPath();
+            return ruta == null ? RUTA_LOGIN : ruta;
+        } catch (RuntimeException urlIlegible) {
+            // Ante la duda, como si siguiera en el login: se reintenta igual que antes.
+            return RUTA_LOGIN;
         }
     }
 

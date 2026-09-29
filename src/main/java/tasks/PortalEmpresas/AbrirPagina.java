@@ -1,8 +1,5 @@
 package tasks.PortalEmpresas;
 
-import static userinterfaces.CmaxPage.TXT_USUARIO;
-
-import java.time.temporal.ChronoUnit;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.Tasks;
@@ -13,6 +10,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import questions.EnPantallaDeLogin;
 
 /**
  * Abre el portal dejando el navegador sin rastro de la sesion anterior.
@@ -33,9 +31,6 @@ public class AbrirPagina implements Task {
   private static final String LIMPIAR_ALMACENAMIENTO =
       "try { window.localStorage.clear(); window.sessionStorage.clear(); } catch (e) { }";
 
-  /** Margen para que el portal decida si pinta el login o redirige al inicio. */
-  private static final int ESPERA_LOGIN_SEGUNDOS = 15;
-
   private final String url;
 
   public AbrirPagina(String url) {
@@ -54,25 +49,13 @@ public class AbrirPagina implements Task {
     // Solo hay que limpiar si el portal NO nos dejo en la pantalla de login: eso significa
     // que reconocio una sesion viva de un escenario anterior. Comprobarlo evita recargar
     // el portal en el caso normal, que es casi siempre y cuesta varios segundos.
-    if (!estaEnLogin(actor)) {
+    if (!actor.asksFor(EnPantallaDeLogin.ahora())) {
       LOG.info("Habia una sesion previa activa; se limpia y se vuelve al login");
       limpiarSesionAnterior(actor);
       actor.attemptsTo(Open.url(url));
     }
 
     LOG.info("Portal abierto en {}", url);
-  }
-
-  private <T extends Actor> boolean estaEnLogin(T actor) {
-    try {
-      return TXT_USUARIO
-          .resolveFor(actor)
-          .withTimeoutOf(ESPERA_LOGIN_SEGUNDOS, ChronoUnit.SECONDS)
-          .isCurrentlyVisible();
-
-    } catch (RuntimeException noHayFormulario) {
-      return false;
-    }
   }
 
   private <T extends Actor> void limpiarSesionAnterior(T actor) {
