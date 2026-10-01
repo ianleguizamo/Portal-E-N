@@ -8,11 +8,12 @@ import interactions.IngresarTexto;
 import interactions.JavaScriptSmartClick;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
+import models.RespuestaLogin;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Performable;
@@ -36,11 +37,46 @@ public class RealizarIngreso implements Task {
     private static final String URL_LOGIN = "https://miclaroempresas.com.co/login";
     private static final String RUTA_LOGIN = "/login";
 
-    /** Cantidad de intentos de login ante el bloqueo anti-bot. Se puede ajustar con -Dlogin.maxIntentos=N */
+    /** Intentos de login ante un error del portal. Se puede ajustar con -Dlogin.maxIntentos=N */
     private static final int MAX_INTENTOS = Integer.getInteger("login.maxIntentos", 3);
 
-    /** Texto (sin tildes, para no depender del encoding) que identifica el modal de bloqueo del portal. */
-    private static final String TEXTO_MODAL_ERROR = "al procesar tu solicitud";
+    /** Tope para que el portal conteste al boton Ingresar. */
+    private static final int ESPERA_RESPUESTA_MS = 30000;
+
+    /**
+     * Espera minima tras pulsar Ingresar. Es lo que antes se esperaba siempre en fijo: aunque la
+     * respuesta llegue antes, el inicio tarda en pintarse junto con el modal de bienvenida que
+     * se cierra mas abajo.
+     */
+    private static final int MARGEN_MINIMO_MS = 6000;
+
+    private static final int SONDEO_MS = 500;
+
+    private static final String CARGANDO = "CARGANDO";
+    private static final String SIN_REACCION = "SIN_REACCION";
+    private static final String PREFIJO_OTRO_ERROR = "OTRO_ERROR|";
+
+    /**
+     * Lee que respondio el login segun el modal que quedo visible. Calcado de LOGIN.loginEmpresas
+     * en el JS del portal: 500 -> #errorServer2, 429 -> #errorRecaptcha, 401 y codigos sin
+     * modal propio -> #errorServerShort, 400 y fallo del segundo paso -> #errorServer, 403 ->
+     * #errorServerUser. Mientras espera la respuesta muestra #loaderModal.
+     */
+    private static final String LEER_RESPUESTA =
+            "var vis = function (id) { var e = document.getElementById(id); if (!e) { return false; }"
+                    + " var s = window.getComputedStyle(e);"
+                    + " return s.display !== 'none' && s.visibility !== 'hidden' && e.getClientRects().length > 0; };"
+                    + "var txt = function (id) { var e = document.getElementById(id);"
+                    + " return e ? e.innerText.replace(/\\s+/g, ' ').trim() : ''; };"
+                    + "if (location.pathname.indexOf('" + RUTA_LOGIN + "') !== 0) { return 'INGRESO'; }"
+                    + "if (vis('errorRecaptcha')) { return 'RECHAZO_RECAPTCHA'; }"
+                    + "if (vis('errorServer2')) { return 'ERROR_SERVIDOR'; }"
+                    + "if (vis('errorServerShort')) { var m = txt('json-message-short');"
+                    + " return /credenciales/i.test(m) ? 'CREDENCIALES_INCORRECTAS' : '" + PREFIJO_OTRO_ERROR + "' + m; }"
+                    + "if (vis('errorServerUser')) { return '" + PREFIJO_OTRO_ERROR + "' + txt('errorServerUser'); }"
+                    + "if (vis('errorServer')) { return '" + PREFIJO_OTRO_ERROR + "' + txt('errorTextModal'); }"
+                    + "if (vis('loaderModal')) { return '" + CARGANDO + "'; }"
+                    + "return '" + SIN_REACCION + "';";
 
     Map<String, String> data = new HashMap<>();
 
@@ -55,6 +91,8 @@ public class RealizarIngreso implements Task {
     @Override
     @Step("Realizar inicio de sesion en el portal")
     public <T extends Actor> void performAs(T actor) {
+        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
+        List<Respuesta> fallidos = new ArrayList<>();
         boolean ingresoOk = false;
 
         for (int intento = 1; intento <= MAX_INTENTOS && !ingresoOk; intento++) {
@@ -66,33 +104,35 @@ public class RealizarIngreso implements Task {
                     JavaScriptSmartClick.on(BTN_INGRESAR)
             );
 
-            // Damos tiempo a que el portal responda (o muestre el modal de error).
-            WaitFor.silencioso(6000);
+            Respuesta respuesta = esperarRespuesta(driver);
+            LOGGER.info("[Login Portal E&N] Intento " + intento + ": " + respuesta.texto());
 
-            if (modalErrorPresente(actor)) {
-                LOGGER.warn("[Login Portal E&N] Intento " + intento
-                        + ": el portal mostro 'Algo salio mal al procesar tu solicitud' "
-                        + "(probable deteccion anti-bot). Se cierra el modal en 'Aceptar'.");
-                cerrarModalConAceptar(actor);
-                WaitFor.silencioso(3000);
+            if (respuesta.tipo == RespuestaLogin.INGRESO) {
+                ingresoOk = true;
+                break;
+            }
 
-                // Si quedan intentos, recargamos el login para un intento limpio.
-                if (intento < MAX_INTENTOS) {
-                    actor.attemptsTo(Open.url(URL_LOGIN));
-                    WaitFor.silencioso(4000);
-                }
+            fallidos.add(respuesta);
 
-                // El aviso no siempre es un bloqueo: a veces el portal lo muestra y aun asi deja
-                // la sesion iniciada. Entonces /login redirige al inicio y el intento siguiente
-                // moria buscando el campo de correo (NoSuchElement en _cenLoginPortlet_userName),
-                // tumbando un escenario que ya estaba dentro. Paso en Doc_Claro_Col y en
-                // Descarga_Facturas.
-                if (sesionYaIniciada(actor)) {
-                    LOGGER.info("[Login Portal E&N] Intento " + intento
-                            + ": el portal mostro el aviso pero la sesion quedo iniciada; se continua.");
-                    ingresoOk = true;
-                }
-            } else {
+            // Reintentar con la misma contrasena no la arregla y puede bloquear la cuenta.
+            if (respuesta.tipo == RespuestaLogin.CREDENCIALES_INCORRECTAS) {
+                break;
+            }
+
+            cerrarModalConAceptar(actor);
+            WaitFor.silencioso(3000);
+
+            // Si quedan intentos, recargamos el login para un intento limpio.
+            if (intento < MAX_INTENTOS) {
+                actor.attemptsTo(Open.url(URL_LOGIN));
+                WaitFor.silencioso(4000);
+            }
+
+            // Red de seguridad: si pese al error el portal dejo la sesion iniciada, /login
+            // redirige al inicio y el intento siguiente moriria buscando el campo de correo.
+            if (sesionYaIniciada(actor)) {
+                LOGGER.info("[Login Portal E&N] Intento " + intento
+                        + ": pese al error la sesion quedo iniciada; se continua.");
                 ingresoOk = true;
             }
         }
@@ -114,15 +154,109 @@ public class RealizarIngreso implements Task {
         }
 
         if (!ingresoOk) {
-            throw new AssertionError(
-                    "No fue posible iniciar sesion en el Portal Empresas y Negocios: el portal bloqueo el ingreso con "
-                    + "'Algo salio mal al procesar tu solicitud' tras " + MAX_INTENTOS + " intentos "
-                    + "(probable deteccion anti-bot / captcha).");
+            throw new AssertionError(mensajeDeFallo(fallidos));
         }
     }
 
     /**
-     * El portal nos tiene dentro aunque haya mostrado el aviso de error.
+     * Sondea la pagina hasta que el portal conteste al boton Ingresar o se agote la espera.
+     *
+     * <p>Antes se esperaban 6 s fijos y se buscaba el texto del modal: un login lento (spinner
+     * todavia girando) se contaba como bloqueo, igual que un error real.
+     */
+    private Respuesta esperarRespuesta(WebDriver driver) {
+        long inicio = System.currentTimeMillis();
+        String estado = SIN_REACCION;
+
+        while (System.currentTimeMillis() - inicio < ESPERA_RESPUESTA_MS) {
+            estado = leerEstado(driver);
+            if (!CARGANDO.equals(estado) && !SIN_REACCION.equals(estado)) {
+                break;
+            }
+            WaitFor.silencioso(SONDEO_MS);
+        }
+
+        long transcurrido = System.currentTimeMillis() - inicio;
+        if (transcurrido < MARGEN_MINIMO_MS) {
+            WaitFor.silencioso((int) (MARGEN_MINIMO_MS - transcurrido));
+        }
+
+        return Respuesta.de(estado);
+    }
+
+    private String leerEstado(WebDriver driver) {
+        try {
+            return String.valueOf(((JavascriptExecutor) driver).executeScript(LEER_RESPUESTA));
+        } catch (RuntimeException paginaEnTransicion) {
+            // Tipicamente el portal esta navegando al inicio tras un login correcto.
+            return CARGANDO;
+        }
+    }
+
+    /**
+     * Mensaje que termina en Smart Tester: dice que paso de verdad en cada intento para que su
+     * analisis no tenga que adivinar. Ver en RespuestaLogin por que no debe decir "captcha"
+     * salvo que lo haya sido.
+     */
+    private static String mensajeDeFallo(List<Respuesta> fallidos) {
+        StringBuilder mensaje = new StringBuilder(
+                "No fue posible iniciar sesion en el Portal Empresas y Negocios: ");
+
+        boolean todosIguales = fallidos.stream().map(Respuesta::texto).distinct().count() == 1;
+        if (todosIguales) {
+            mensaje.append(fallidos.get(0).texto())
+                    .append(fallidos.size() == 1 ? "." : " en los " + fallidos.size() + " intentos.");
+        } else {
+            for (int i = 0; i < fallidos.size(); i++) {
+                mensaje.append(i == 0 ? "" : "; ")
+                        .append("intento ").append(i + 1).append(": ").append(fallidos.get(i).texto());
+            }
+            mensaje.append('.');
+        }
+
+        if (fallidos.stream().allMatch(r -> r.tipo.esFallaDelPortal())) {
+            mensaje.append(" Falla del portal: la automatizacion completo el formulario y pulso Ingresar.");
+        } else if (fallidos.stream().anyMatch(r -> r.tipo == RespuestaLogin.CREDENCIALES_INCORRECTAS)) {
+            mensaje.append(" Revisar la contrasena de la cuenta en config/real-user.json.");
+        }
+        return mensaje.toString();
+    }
+
+    /** Tipo de respuesta del portal mas el detalle que la acompana, si lo hay. */
+    private static final class Respuesta {
+
+        private final RespuestaLogin tipo;
+        private final String detalle;
+
+        private Respuesta(RespuestaLogin tipo, String detalle) {
+            this.tipo = tipo;
+            this.detalle = detalle;
+        }
+
+        static Respuesta de(String estado) {
+            if (estado.startsWith(PREFIJO_OTRO_ERROR)) {
+                return new Respuesta(RespuestaLogin.OTRO_ERROR,
+                        "'" + estado.substring(PREFIJO_OTRO_ERROR.length()) + "'");
+            }
+            int segundos = ESPERA_RESPUESTA_MS / 1000;
+            if (CARGANDO.equals(estado)) {
+                return new Respuesta(RespuestaLogin.SIN_RESPUESTA,
+                        "el indicador de carga siguio activo " + segundos + " s");
+            }
+            if (SIN_REACCION.equals(estado)) {
+                return new Respuesta(RespuestaLogin.SIN_RESPUESTA,
+                        "la pagina no reacciono en " + segundos + " s");
+            }
+            return new Respuesta(RespuestaLogin.valueOf(estado), "");
+        }
+
+        String texto() {
+            return detalle.isEmpty() ? tipo.descripcion() : tipo.descripcion() + ": " + detalle;
+        }
+    }
+
+    /**
+     * El portal nos tiene dentro aunque haya mostrado un error.
      *
      * <p>Se exigen las dos senales para no dar por bueno un login que solo va lento: que la URL
      * haya salido de /login (el portal redirigio) y que el formulario no este. Si la URL sigue
@@ -142,22 +276,6 @@ public class RealizarIngreso implements Task {
         } catch (RuntimeException urlIlegible) {
             // Ante la duda, como si siguiera en el login: se reintenta igual que antes.
             return RUTA_LOGIN;
-        }
-    }
-
-    /** Revisa rapidamente si el modal de bloqueo esta en pantalla, sin esperar el implicit wait completo. */
-    private boolean modalErrorPresente(Actor actor) {
-        WebDriver driver = BrowseTheWeb.as(actor).getDriver();
-        driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
-        try {
-            List<WebElement> coincidencias = driver.findElements(
-                    By.xpath("//*[contains(normalize-space(.),'" + TEXTO_MODAL_ERROR + "')]"));
-            return !coincidencias.isEmpty();
-        } catch (Exception e) {
-            return false;
-        } finally {
-            // Restaura el implicit wait configurado en serenity.properties.
-            driver.manage().timeouts().implicitlyWait(10000, TimeUnit.MILLISECONDS);
         }
     }
 
